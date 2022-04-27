@@ -3,7 +3,7 @@ import { render } from '../render.js';
 import EditPointView from '../view/edit-point.js';
 import PointView from '../view/point.js';
 
-export default class PointsListPresenter {
+export default class PointListPresenter {
   init = (boardContainer) => {
     this.boardContainer = boardContainer;
     render(new EditPointView(), this.boardContainer);
