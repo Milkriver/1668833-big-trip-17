@@ -5,7 +5,7 @@ const createPointsListTemplate = () => (
   </ul>`
 );
 
-export default class PointsListView {
+export default class PointListView {
   getTemplate() {
     return createPointsListTemplate();
   }
