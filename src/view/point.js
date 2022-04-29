@@ -1,9 +1,15 @@
 import { createElement } from '../render.js';
+import { humanizeTaskDueDate } from '../utils.js';
 
-const createPointTemplate = () => (
-  `<li class="trip-events__item">
+const createPointTemplate = (point) => {
+  const {dateFrom} = point;
+  const date = dateFrom !== null
+    ? humanizeTaskDueDate(dateFrom)
+    : '';
+  return (
+    `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="2019-03-18">MAR 18</time>
+      <time class="event__date" datetime="2019-03-18">${date}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
       </div>
@@ -38,11 +44,12 @@ const createPointTemplate = () => (
       </button>
     </div>
   </li>`
-);
+  );
+};
 
 export default class PointView {
   getTemplate() {
-    return createPointTemplate();
+    return createPointTemplate(this.point);
   }
 
   getElement() {
