@@ -8,7 +8,7 @@ export default class PointListPresenter {
     this.pointModel = pointModel;
     this.pointList = [...this.pointModel.getPoints()];
 
-    render(new EditPointView(), this.boardContainer);
+    render(new EditPointView(this.pointList[0]), this.boardContainer);
 
     for (let i = 0; i < 3; i++) {
       render(new PointView(this.pointList[i]), this.boardContainer);

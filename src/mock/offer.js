@@ -1,6 +1,6 @@
 import { generateRandomMock, getRandomInteger } from '../utils';
 
-const offerType = [
+export const offerType = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'
 ];
 const offerTitle = [
@@ -21,6 +21,21 @@ export const generateOffer = () => (
         'price': getRandomInteger(10, 100)
       }, {
         'id': 2,
+        'title': generateRandomMock(offerTitle),
+        'price': getRandomInteger(10, 100)
+      }
+      , {
+        'id': 3,
+        'title': generateRandomMock(offerTitle),
+        'price': getRandomInteger(10, 100)
+      }
+      , {
+        'id': 4,
+        'title': generateRandomMock(offerTitle),
+        'price': getRandomInteger(10, 100)
+      }
+      , {
+        'id': 5,
         'title': generateRandomMock(offerTitle),
         'price': getRandomInteger(10, 100)
       }
