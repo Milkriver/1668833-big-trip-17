@@ -7,6 +7,12 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const humanizeTaskDueDate = (dueDate) => dayjs(dueDate).format('D MMMM');
+const humanizeTaskDueDate = (dueDate) => dayjs(dueDate).format('MMM D');
+const humanizeTaskDueTime = (dueTime) => dayjs(dueTime).format('HH:mm');
 
-export {getRandomInteger, humanizeTaskDueDate};
+const generateRandomMock = (mockArray) => {
+  const randomIndex = getRandomInteger(0, mockArray.length - 1);
+  return mockArray[randomIndex];
+};
+
+export { getRandomInteger, humanizeTaskDueDate, humanizeTaskDueTime, generateRandomMock};

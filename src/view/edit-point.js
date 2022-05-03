@@ -150,8 +150,12 @@ const editPointTemplate = () => (
 );
 
 export default class EditPointView {
+  constructor(point) {
+    this.point = point;
+  }
+
   getTemplate() {
-    return editPointTemplate();
+    return editPointTemplate(this.point);
   }
 
   getElement() {
