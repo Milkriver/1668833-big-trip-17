@@ -11,11 +11,12 @@ const humanizePointDueDate = (dueDate) => dayjs(dueDate).format('MMM D');
 const humanizePointDueTime = (dueTime) => dayjs(dueTime).format('HH:mm');
 const humanizePointDatetimeDueDate = (dueDate) => dayjs(dueDate).format('YYYY-MM-DD');
 const humanizePointDatetimeDueTime = (dueTime) => dayjs(dueTime).format('YYYY-MM-DDTHH:mm');
-
+const timeDifferenceHours = (dateTo, dateFrom) => Math.floor(dayjs(dateTo).diff(dayjs(dateFrom), 'minute') / 60);
+const timeDifferenceMinutes = (dateTo, dateFrom) => dayjs(dateTo).diff(dayjs(dateFrom), 'minute') % 60;
 
 const generateRandomMock = (mockArray) => {
   const randomIndex = getRandomInteger(0, mockArray.length - 1);
   return mockArray[randomIndex];
 };
 
-export { getRandomInteger, humanizePointDueDate, humanizePointDueTime, humanizePointDatetimeDueTime, humanizePointDatetimeDueDate, generateRandomMock };
+export { getRandomInteger, humanizePointDueDate, humanizePointDueTime, humanizePointDatetimeDueTime, humanizePointDatetimeDueDate, generateRandomMock, timeDifferenceHours, timeDifferenceMinutes };
