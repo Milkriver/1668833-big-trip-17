@@ -1,5 +1,6 @@
 import { generateRandomMock, getRandomInteger } from '../utils';
 import { generateOffer } from './offer';
+
 const pointType = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'
 ];
@@ -7,7 +8,7 @@ const pointDestination = [
   'London', 'Moscow', 'Amsterdam', 'Tokio', 'Paris', 'Ekaterinburg', 'Ottawa', 'Toronto', 'Lissabon'
 ];
 
-export const generateDestination = () => (
+const generateDestination = () => (
   {
     description: `${generateRandomMock(pointDestination)}, is a beautiful city, a true asian pearl, with crowded streets.`,
     name: `${generateRandomMock(pointDestination)}`,

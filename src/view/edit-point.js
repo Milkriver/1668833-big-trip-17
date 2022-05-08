@@ -4,6 +4,22 @@ import { generateRandomMock } from '../utils.js';
 
 const editPointTemplate = (point) => {
   const { destination, offers } = point;
+  const renderEventItem = (offerTypeArray) => offerTypeArray.map((offer) =>
+    `<div class="event__type-item">
+      <input id="event-type-${offer}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer}">
+      <label class="event__type-label  event__type-label--${offer}" for="event-type-${offer}-1">${generateRandomMock(offerTypeArray)}</label>
+    </div>`
+  );
+  const renderOfferItem = (offersArray) => offersArray.map((offer) =>
+    `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
+      <label class="event__offer-label" for="event-offer-seats-1">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </label>
+    </div>`
+  ).join('');
   return (
     `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -17,54 +33,10 @@ const editPointTemplate = (point) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-
-              <div class="event__type-item">
-                <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">${generateRandomMock(offerType)}</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">${generateRandomMock(offerType)}</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                <label class="event__type-label  event__type-label--train" for="event-type-train-1">${generateRandomMock(offerType)}</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">${generateRandomMock(offerType)}</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">${generateRandomMock(offerType)}</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">${generateRandomMock(offerType)}</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">${generateRandomMock(offerType)}</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">${generateRandomMock(offerType)}</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">${generateRandomMock(offerType)}</label>
-              </div>
-            </fieldset>
-          </div>
-        </div>
+              ${renderEventItem(offerType)}
+            </fieldset >
+          </div >
+        </div >
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
@@ -97,60 +69,17 @@ const editPointTemplate = (point) => {
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
           <div class="event__available-offers">
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-              <label class="event__offer-label" for="event-offer-luggage-1">
-                <span class="event__offer-title">${offers.offers[0].title}</span>
-                &plus;&euro;&nbsp;
-                <span class="event__offer-price">${offers.offers[0].price}</span>
-              </label>
-            </div>
-
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-              <label class="event__offer-label" for="event-offer-comfort-1">
-                <span class="event__offer-title">${offers.offers[1].title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offers.offers[1].price}</span>
-              </label>
-            </div>
-
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-              <label class="event__offer-label" for="event-offer-meal-1">
-                <span class="event__offer-title">${offers.offers[2].title}</span>
-                &plus;&euro;&nbsp;
-                <span class="event__offer-price">${offers.offers[2].price}</span>
-              </label>
-            </div>
-
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-              <label class="event__offer-label" for="event-offer-seats-1">
-                <span class="event__offer-title">${offers.offers[3].title}</span>
-                &plus;&euro;&nbsp;
-                <span class="event__offer-price">${offers.offers[3].price}</span>
-              </label>
-            </div>
-
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-              <label class="event__offer-label" for="event-offer-train-1">
-                <span class="event__offer-title">${offers.offers[4].title}</span>
-                &plus;&euro;&nbsp;
-                <span class="event__offer-price">${offers.offers[4].price}</span>
-              </label>
-            </div>
+            ${renderOfferItem(offers.offers)}
           </div>
         </section>
-
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description"> ${destination.description}</p>
         </section>
       </section>
     </form>
-  </li>`
+  </li > `
   );
 };
 

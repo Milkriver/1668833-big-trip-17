@@ -1,6 +1,6 @@
 import PointModel from './model/point-model.js';
 import PointListPresenter from './presenter/point-list-presenter.js';
-import {render, RenderPosition} from './render.js';
+import { render, RenderPosition } from './render.js';
 import FilterView from './view/filter.js';
 import PointListView from './view/point-list.js';
 import SortView from './view/sort.js';

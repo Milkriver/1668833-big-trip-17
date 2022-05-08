@@ -16,28 +16,19 @@ export const generateOffer = () => (
     type: generateRandomMock(offerType),
     offers: [
       {
-        'id': 1,
-        'title': generateRandomMock(offerTitle),
-        'price': getRandomInteger(10, 100)
-      }, {
-        'id': 2,
-        'title': generateRandomMock(offerTitle),
-        'price': getRandomInteger(10, 100)
-      }
-      , {
-        'id': 3,
-        'title': generateRandomMock(offerTitle),
-        'price': getRandomInteger(10, 100)
-      }
-      , {
-        'id': 4,
-        'title': generateRandomMock(offerTitle),
-        'price': getRandomInteger(10, 100)
-      }
-      , {
-        'id': 5,
-        'title': generateRandomMock(offerTitle),
-        'price': getRandomInteger(10, 100)
+        id: 1,
+        title: generateRandomMock(offerTitle),
+        price: getRandomInteger(10, 100)
+      },
+      {
+        id: 2,
+        title: generateRandomMock(offerTitle),
+        price: getRandomInteger(10, 100)
+      },
+      {
+        id: 3,
+        title: generateRandomMock(offerTitle),
+        price: getRandomInteger(10, 100)
       }
     ]
   }
