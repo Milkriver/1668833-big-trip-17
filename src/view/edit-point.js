@@ -9,11 +9,10 @@ const editPointTemplate = (point) => {
       <label class="event__type-label  event__type-label--${offer}" for="event-type-${offer}-1">${offer}</label>
     </div>`
   ).join('');
-
   const renderOfferItem = (offerItems) => offerItems.map((offer) =>
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-      <label class="event__offer-label" for="event-offer-seats-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-offer-${offer.id}">
+      <label class="event__offer-label" for="event-offer-${offer.id}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
