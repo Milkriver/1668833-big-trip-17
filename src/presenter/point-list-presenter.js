@@ -3,6 +3,7 @@ import EditPointView from '../view/edit-point.js';
 import PointView from '../view/point.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
+import NoPointScreenView from '../view/no-point-screen.js';
 
 export default class PointListPresenter {
   #boardContainer = null;
@@ -51,17 +52,17 @@ export default class PointListPresenter {
     render(pointComponent, this.#pointListComponent.element);
   };
 
-  #renderBoard = () => {
-    render(new SortView(), this.#boardContainer);
-    render(this.#pointListComponent, this.#boardContainer);
-  };
-
   init = () => {
-    this.#pointList = [...this.#pointModel.points];
+    render(new SortView(), this.#boardContainer);
 
-    for (let i = 0; i < 3; i++) {
-      this.#renderPoint(this.#pointList[i]);
+    this.#pointList = [...this.#pointModel.points];
+    if (this.#pointList.length < 1) {
+      render(new NoPointScreenView, this.#boardContainer);
+    } else {
+      render(this.#pointListComponent, this.#boardContainer);
+      for (let i = 0; i < 3; i++) {
+        this.#renderPoint(this.#pointList[i]);
+      }
     }
-    this.#renderBoard();
   };
 }
