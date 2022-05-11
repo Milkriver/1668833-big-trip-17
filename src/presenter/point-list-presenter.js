@@ -40,9 +40,9 @@ export default class PointListPresenter {
 
     pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
       replaceFormToPoint();
-      document.addEventListener('keydown', onEscKeyDown);
+      document.removeEventListener('keydown', onEscKeyDown);
     });
-    pointEditComponent.element.querySelector('.event__save-btn').addEventListener('submit', (evt) => {
+    pointEditComponent.element.querySelector('form').addEventListener('submit', (evt) => {
       evt.preventDefault();
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);
