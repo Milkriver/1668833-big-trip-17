@@ -1,5 +1,5 @@
+import AbstractView from '../framework/view/abstract-view.js';
 import { offerType } from '../mock/offer.js';
-import { createElement } from '../render.js';
 
 const editPointTemplate = (point) => {
   const { destination, offers } = point;
@@ -83,27 +83,15 @@ const editPointTemplate = (point) => {
   );
 };
 
-export default class EditPointView {
-  #element = null;
+export default class EditPointView extends AbstractView{
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
   }
 
   get template() {
     return editPointTemplate(this.#point);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
