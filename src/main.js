@@ -1,13 +1,10 @@
 import PointModel from './model/point-model.js';
 import PointListPresenter from './presenter/point-list-presenter.js';
-import { render, RenderPosition } from './render.js';
+import { render } from './render.js';
 import FilterView from './view/filter.js';
 import NewEventButtonView from './view/new-event-button.js';
-import TripInfoView from './view/trip-info.js';
 
 const siteTripMainElement = document.querySelector('.trip-main');
-render(new TripInfoView(), siteTripMainElement, RenderPosition.AFTERBEGIN);
-
 const siteFilterElement = siteTripMainElement.querySelector('.trip-controls__filters');
 render(new FilterView(), siteFilterElement);
 render(new NewEventButtonView(), siteTripMainElement);

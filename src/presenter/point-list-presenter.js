@@ -1,9 +1,10 @@
-import { render } from '../render.js';
+import { render, RenderPosition } from '../render.js';
 import EditPointView from '../view/edit-point.js';
 import PointView from '../view/point.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import NoPointScreenView from '../view/no-point-screen.js';
+import TripInfoView from '../view/trip-info.js';
 
 export default class PointListPresenter {
   #boardContainer = null;
@@ -52,17 +53,21 @@ export default class PointListPresenter {
     render(pointComponent, this.#pointListComponent.element);
   };
 
-  init = () => {
+  #renderContent = () => {
+    const siteTripMainElement = document.querySelector('.trip-main');
+    render(new TripInfoView(), siteTripMainElement, RenderPosition.AFTERBEGIN);
     render(new SortView(), this.#boardContainer);
-
-    this.#pointList = [...this.#pointModel.points];
-    if (this.#pointList.length < 1) {
-      render(new NoPointScreenView, this.#boardContainer);
-    } else {
-      render(this.#pointListComponent, this.#boardContainer);
-      for (let i = 0; i < 3; i++) {
-        this.#renderPoint(this.#pointList[i]);
-      }
+    render(this.#pointListComponent, this.#boardContainer);
+    for (let i = 0; i < 3; i++) {
+      this.#renderPoint(this.#pointList[i]);
     }
+  };
+
+  init = () => {
+    this.#pointList = [...this.#pointModel.points];
+    if (this.#pointList.length === 0) {
+      return render(new NoPointScreenView, this.#boardContainer);
+    }
+    this.#renderContent();
   };
 }
