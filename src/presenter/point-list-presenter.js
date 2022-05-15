@@ -17,6 +17,15 @@ export default class PointListPresenter {
     this.#pointModel = pointModel;
   }
 
+  init = () => {
+    this.#pointList = [...this.#pointModel.points];
+    if (this.#pointList.length === 0) {
+      render(new NoPointScreenView, this.#boardContainer);
+      return;
+    }
+    this.#renderContent();
+  };
+
   #renderPoint = (point) => {
     const pointComponent = new PointView(point);
     const pointEditComponent = new EditPointView(point);
@@ -60,14 +69,5 @@ export default class PointListPresenter {
     for (let i = 0; i < 3; i++) {
       this.#renderPoint(this.#pointList[i]);
     }
-  };
-
-  init = () => {
-    this.#pointList = [...this.#pointModel.points];
-    if (this.#pointList.length === 0) {
-      render(new NoPointScreenView, this.#boardContainer);
-      return;
-    }
-    this.#renderContent();
   };
 }
