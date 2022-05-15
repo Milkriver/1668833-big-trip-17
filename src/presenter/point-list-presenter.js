@@ -65,7 +65,8 @@ export default class PointListPresenter {
   init = () => {
     this.#pointList = [...this.#pointModel.points];
     if (this.#pointList.length === 0) {
-      return render(new NoPointScreenView, this.#boardContainer);
+      render(new NoPointScreenView, this.#boardContainer);
+      return;
     }
     this.#renderContent();
   };

@@ -88,6 +88,7 @@ export default class EditPointView extends AbstractView {
 
   constructor(point) {
     super();
+
     this.#point = point;
   }
 

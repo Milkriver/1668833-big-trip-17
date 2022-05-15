@@ -61,6 +61,7 @@ export default class PointView extends AbstractView{
 
   constructor(point) {
     super();
+
     this.#point = point;
   }
 
@@ -77,5 +78,4 @@ export default class PointView extends AbstractView{
     evt.preventDefault();
     this._callback.editClick();
   };
-
 }

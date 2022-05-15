@@ -1,6 +1,6 @@
+import { render } from './framework/render.js';
 import PointModel from './model/point-model.js';
 import PointListPresenter from './presenter/point-list-presenter.js';
-import { render } from './render.js';
 import FilterView from './view/filter.js';
 import NewEventButtonView from './view/new-event-button.js';
 
