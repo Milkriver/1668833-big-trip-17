@@ -1,4 +1,4 @@
-import { render, RenderPosition } from '../render.js';
+import { render, RenderPosition } from '../framework/render.js';
 import EditPointView from '../view/edit-point.js';
 import PointView from '../view/point.js';
 import SortView from '../view/sort.js';
@@ -35,17 +35,16 @@ export default class PointListPresenter {
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointComponent.setEditClickHandler(() => {
       replacePointToForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointEditComponent.setEditClickHandler(() => {
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     });
-    pointEditComponent.element.querySelector('form').addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    pointEditComponent.setFormSubmitHandler(() => {
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     });
@@ -66,7 +65,8 @@ export default class PointListPresenter {
   init = () => {
     this.#pointList = [...this.#pointModel.points];
     if (this.#pointList.length === 0) {
-      return render(new NoPointScreenView, this.#boardContainer);
+      render(new NoPointScreenView, this.#boardContainer);
+      return;
     }
     this.#renderContent();
   };
