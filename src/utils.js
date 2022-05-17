@@ -18,5 +18,17 @@ const generateRandomMock = (mockArray) => {
   const randomIndex = getRandomInteger(0, mockArray.length - 1);
   return mockArray[randomIndex];
 };
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
 
-export { getRandomInteger, humanizePointDueDate, humanizePointDueTime, humanizePointDatetimeDueTime, humanizePointDatetimeDueDate, generateRandomMock, timeDifferenceHours, timeDifferenceMinutes };
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+export { getRandomInteger, updateItem, humanizePointDueDate, humanizePointDueTime, humanizePointDatetimeDueTime, humanizePointDatetimeDueDate, generateRandomMock, timeDifferenceHours, timeDifferenceMinutes };
