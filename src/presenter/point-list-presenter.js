@@ -21,10 +21,6 @@ export default class PointListPresenter {
 
   init = () => {
     this.#pointList = [...this.#pointModel.points];
-    if (this.#pointList.length === 0) {
-      render(new NoPointScreenView, this.#pointListContainer);
-      return;
-    }
     this.#renderContent();
   };
 
@@ -34,15 +30,15 @@ export default class PointListPresenter {
   };
 
   #renderPoint = (point) => {
-    // eslint-disable-next-line no-console
-    console.log(point);
     const pointPresenter = new PointPresenter(this.#pointListComponent.element);
-    // eslint-disable-next-line no-console
-    console.log(pointPresenter);
     pointPresenter.init(point);
   };
 
   #renderContent = () => {
+    if (this.#pointList.length === 0) {
+      render(new NoPointScreenView, this.#pointListContainer);
+      return;
+    }
     this.#renderTripInfo();
     render(new SortView(), this.#pointListContainer);
     render(this.#pointListComponent, this.#pointListContainer);

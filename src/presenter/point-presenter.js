@@ -17,29 +17,28 @@ export default class PointPresenter {
 
     this.#pointComponent = new PointView(point);
     this.#pointEditComponent = new EditPointView(point);
-    // eslint-disable-next-line no-console
-    console.log(this.#handleEditClick);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointEditComponent.setEditClickHandler(this.#handleFormSubmit);
+    this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
 
-    render(this.#pointComponent, this.#pointEditComponent);
+    render(this.#pointComponent, this.#pointListContainer);
   };
 
   #replacePointToForm = () => {
-    replace(this.#pointEditComponent, this.pointComponent);
+    replace(this.#pointEditComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#onEscKeyDownHandler);
   };
 
   #replaceFormToPoint = () => {
-    replace(this.#pointComponent, this.pointEditComponent);
+    replace(this.#pointComponent, this.#pointEditComponent);
     document.removeEventListener('keydown', this.#onEscKeyDownHandler);
   };
 
   #onEscKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      this.replaceFormToPoint();
+      this.#replaceFormToPoint();
     }
   };
 
