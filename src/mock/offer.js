@@ -1,4 +1,4 @@
-import { generateRandomMock, getRandomInteger } from '../utils';
+import { generateRandomMock, getRandomInteger } from '../utils/common.js';
 
 export const offerType = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'

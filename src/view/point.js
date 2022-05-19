@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizePointDatetimeDueDate, humanizePointDatetimeDueTime, humanizePointDueDate, humanizePointDueTime, timeDifferenceHours, timeDifferenceMinutes } from '../utils.js';
+import { humanizePointDatetimeDueDate, humanizePointDatetimeDueTime, humanizePointDueDate, humanizePointDueTime, timeDifferenceHours, timeDifferenceMinutes } from '../utils/common.js';
 
 const createPointTemplate = (point) => {
   const { dateFrom, dateTo, destination, type, basePrice, isFavorite, offers } = point;
