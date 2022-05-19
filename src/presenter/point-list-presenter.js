@@ -28,6 +28,7 @@ export default class PointListPresenter {
   init = () => {
     this.#pointList = [...this.#pointModel.points];
     this.#sourcedPoints = [...this.#pointModel.points];
+    this.#sortPoints(this.#currentSortType);
     this.#renderContent();
   };
 
@@ -37,7 +38,7 @@ export default class PointListPresenter {
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
-  #sortTasks = (sortType) => {
+  #sortPoints = (sortType) => {
     switch (sortType) {
       case SortType.DAY:
         this.#pointList.sort(sortPointDay);
@@ -48,10 +49,7 @@ export default class PointListPresenter {
       case SortType.PRICE:
         this.#pointList.sort(sortPointPrice);
         break;
-      default:
-        this.#pointList = [...this.#sourcedPoints];
     }
-
     this.#currentSortType = sortType;
   };
 
@@ -68,7 +66,7 @@ export default class PointListPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
-    this.#sortTasks(sortType);
+    this.#sortPoints(sortType);
     this.#clearPointList();
     this.#renderPointList();
   };
@@ -84,16 +82,16 @@ export default class PointListPresenter {
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
-  #clearPointList = () => {
-    this.#pointPresenter.forEach((presenter) => presenter.destroy());
-    this.#pointPresenter.clear();
-  };
-
   #renderPointList = () => {
     render(this.#pointListComponent, this.#pointListContainer);
     for (let i = 0; i < 3; i++) {
       this.#renderPoint(this.#pointList[i]);
     }
+  };
+
+  #clearPointList = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
   };
 
   #renderContent = () => {
