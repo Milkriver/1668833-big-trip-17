@@ -82,11 +82,15 @@ export default class PointListPresenter {
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
+  #renderList = (list) => {
+    for (let i = 0; i < list.length; i++) {
+      this.#renderPoint(list[i]);
+    }
+  };
+
   #renderPointList = () => {
     render(this.#pointListComponent, this.#pointListContainer);
-    for (let i = 0; i < 3; i++) {
-      this.#renderPoint(this.#pointList[i]);
-    }
+    this.#renderList(this.#pointList);
   };
 
   #clearPointList = () => {
