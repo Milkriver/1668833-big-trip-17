@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { generateRandomMock, getRandomInteger } from '../utils';
+import { generateRandomMock, getRandomInteger } from '../utils/common.js';
 import { generateOffer } from './offer';
 
 const pointType = [
@@ -21,12 +21,18 @@ const generateDestination = () => (
     ]
   }
 );
+const generateDate = (from, to) => {
+  const dateFrom = Date.parse(from);
+  const dateTo = Date.parse(to);
+
+  return new Date(Math.floor(Math.random() * (dateTo - dateFrom + 1) + dateFrom));
+};
 
 export const generatePoint = () => (
   {
     basePrice: getRandomInteger(10, 1000),
-    dateFrom: '2019-07-10T22:55:56.845Z',
-    dateTo: '2019-07-11T11:22:13.375Z',
+    dateFrom: generateDate('2021-01-01', '2021-01-15'),
+    dateTo: generateDate('2021-01-16', '2021-01-30'),
     destination: generateDestination(),
     id: nanoid(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
