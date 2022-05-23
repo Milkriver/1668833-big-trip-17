@@ -21,7 +21,6 @@ const BLANK_POINT = {
   },
   type: '',
 };
-
 const editPointTemplate = (point) => {
   const { destination, offers, dateFrom, dateTo, basePrice } = point;
   const renderEventItem = (offerTypes) => offerTypes.map((offer) =>
@@ -30,7 +29,7 @@ const editPointTemplate = (point) => {
       <label class="event__type-label  event__type-label--${offer}" for="event-type-${offer}-1">${offer}</label>
     </div>`
   ).join('');
-  const renderOfferItem = (offerItems) => offerItems.map((offer) =>
+  const renderOfferItem = (offerItems) => offerItems.map((offer) => (
     `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-offer-${offer.id}">
       <label class="event__offer-label" for="event-offer-${offer.id}">
@@ -38,7 +37,7 @@ const editPointTemplate = (point) => {
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
       </label>
-    </div>`
+    </div>`)
   ).join('');
 
   return (
@@ -125,9 +124,23 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #setInnerHandlers = () => {
-
+    this.element.querySelector('.event__offer-checkbox').addEventListener('change', this.#destinationToggleHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#offersToggleHandler);
   };
 
+  #destinationToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      destination: !this._state.destination,
+    });
+  };
+
+  #offersToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      offers: !this._state.offers,
+    });
+  };
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
