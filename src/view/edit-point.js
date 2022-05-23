@@ -1,8 +1,29 @@
-import AbstractView from '../framework/view/abstract-view.js';
 import { offerType } from '../mock/offer.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
+
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: null,
+  dateTo: null,
+  destination: '',
+  id: 0,
+  isFavorite: false,
+  offers: {
+    type: '',
+    offers: [
+      {
+        id: 0,
+        title: '',
+        price: 0
+      }
+    ]
+  },
+  type: '',
+};
 
 const editPointTemplate = (point) => {
-  const { destination, offers } = point;
+  const { destination, offers, dateFrom, dateTo, basePrice } = point;
   const renderEventItem = (offerTypes) => offerTypes.map((offer) =>
     `<div class="event__type-item">
       <input id="event-type-${offer}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer}">
@@ -40,9 +61,9 @@ const editPointTemplate = (point) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              Flight
+            ${offers.type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination.name} list="destination-list-1">
             <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
@@ -52,14 +73,14 @@ const editPointTemplate = (point) => {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25">&mdash;
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeEditPointDatetimeDueTime(dateFrom)}">&mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeEditPointDatetimeDueTime(dateTo)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
             <label class="event__label" for="event-price-1"><span class="visually-hidden">Price</span>&euro;</label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="160">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value=${basePrice}>
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -83,18 +104,30 @@ const editPointTemplate = (point) => {
   );
 };
 
-export default class EditPointView extends AbstractView {
+export default class EditPointView extends AbstractStatefulView {
   #point = null;
 
-  constructor(point) {
+  constructor(point = BLANK_POINT) {
     super();
 
-    this.#point = point;
+    this._state = EditPointView.parsePointToState(point);
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return editPointTemplate(this.#point);
+    return editPointTemplate(this._state);
   }
+
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  };
+
+  #setInnerHandlers = () => {
+
+  };
+
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
@@ -103,7 +136,7 @@ export default class EditPointView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(EditPointView.parseStateToPoint(this._state));
   };
 
   setEditClickHandler = (callback) => {
@@ -114,5 +147,16 @@ export default class EditPointView extends AbstractView {
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  };
+
+  static parsePointToState = (point) => ({
+    ...point,
+    destination: point.destination,
+    offers: point.offers,
+  });
+
+  static parseStateToPoint = (state) => {
+    const point = { ...state };
+    return point;
   };
 }

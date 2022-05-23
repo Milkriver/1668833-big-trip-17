@@ -11,12 +11,13 @@ const humanizePointDueDate = (dueDate) => dayjs(dueDate).format('MMM D');
 const humanizePointDueTime = (dueTime) => dayjs(dueTime).format('HH:mm');
 const humanizePointDatetimeDueDate = (dueDate) => dayjs(dueDate).format('YYYY-MM-DD');
 const humanizePointDatetimeDueTime = (dueTime) => dayjs(dueTime).format('YYYY-MM-DDTHH:mm');
+const humanizeEditPointDatetimeDueTime = (dueTime) => dayjs(dueTime).format('DD/MM/YY HH:mm');
 const timeDifferenceHours = (dateTo, dateFrom) => Math.floor(dayjs(dateTo).diff(dayjs(dateFrom), 'minute') / 60);
 const timeDifferenceMinutes = (dateTo, dateFrom) => dayjs(dateTo).diff(dayjs(dateFrom), 'minute') % 60;
 
-const generateRandomMock = (mockArray) => {
-  const randomIndex = getRandomInteger(0, mockArray.length - 1);
-  return mockArray[randomIndex];
+const generateRandomMock = (mocks) => {
+  const randomIndex = getRandomInteger(0, mocks.length - 1);
+  return mocks[randomIndex];
 };
 const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
@@ -31,4 +32,4 @@ const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
-export { getRandomInteger, updateItem, humanizePointDueDate, humanizePointDueTime, humanizePointDatetimeDueTime, humanizePointDatetimeDueDate, generateRandomMock, timeDifferenceHours, timeDifferenceMinutes };
+export { getRandomInteger, updateItem, humanizePointDueDate, humanizePointDueTime, humanizeEditPointDatetimeDueTime, humanizePointDatetimeDueTime, humanizePointDatetimeDueDate, generateRandomMock, timeDifferenceHours, timeDifferenceMinutes };

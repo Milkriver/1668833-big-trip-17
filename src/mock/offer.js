@@ -11,9 +11,9 @@ const offerTitle = [
   'Add meal'
 ];
 
-export const generateOffer = () => (
+export const generateOffer = (type) => (
   {
-    type: generateRandomMock(offerType),
+    type: type,
     offers: [
       {
         id: 1,
