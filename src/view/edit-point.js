@@ -46,7 +46,7 @@ const editPointTemplate = (point) => {
         <header class="event__header">
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1"><span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${offers.type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -104,12 +104,10 @@ const editPointTemplate = (point) => {
 };
 
 export default class EditPointView extends AbstractStatefulView {
-  #point = null;
-
   constructor(point = BLANK_POINT) {
     super();
 
-    this._state = EditPointView.parsePointToState(point);
+    this._state = point;
     this.#setInnerHandlers();
   }
 
@@ -124,21 +122,25 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #setInnerHandlers = () => {
-    this.element.querySelector('.event__offer-checkbox').addEventListener('change', this.#destinationToggleHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#offersToggleHandler);
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#offersToggleHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
   };
 
   #destinationToggleHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      destination: !this._state.destination,
+      destination: {
+        description: `${evt.target.value}, is a beautiful city, a true asian pearl, with crowded streets.`,
+        name: evt.target.value
+      }
     });
   };
 
   #offersToggleHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      offers: !this._state.offers,
+      type: evt.target.value,
+      offers: { type: evt.target.value,  offers: this._state.offers.offers},
     });
   };
 
@@ -149,7 +151,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(EditPointView.parseStateToPoint(this._state));
+    this._callback.formSubmit(this._state);
   };
 
   setEditClickHandler = (callback) => {
@@ -160,16 +162,5 @@ export default class EditPointView extends AbstractStatefulView {
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
-  };
-
-  static parsePointToState = (point) => ({
-    ...point,
-    destination: point.destination,
-    offers: point.offers,
-  });
-
-  static parseStateToPoint = (state) => {
-    const point = { ...state };
-    return point;
   };
 }
