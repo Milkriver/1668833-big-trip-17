@@ -34,6 +34,9 @@ const editPointTemplate = (point) => {
       </label>
     </div>`)
   ).join('');
+  const renderDestinationPhoto = (destinationPhotos) => destinationPhotos.map((photo) => (
+    `<img class="event__photo" src=${photo.src} alt="Event photo">`)
+  ).join('');
 
   return (
     `<li class="trip-events__item">
@@ -91,6 +94,11 @@ const editPointTemplate = (point) => {
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             <p class="event__destination-description"> ${destination.description}</p>
+            <div class="event__photos-container">
+            <div class="event__photos-tape">
+            ${renderDestinationPhoto(destination.pictures)}
+            </div>
+          </div>
           </section>
         </section>
       </form>
