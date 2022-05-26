@@ -4,23 +4,18 @@ import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
 
 const BLANK_POINT = {
   basePrice: 0,
-  dateFrom: null,
-  dateTo: null,
-  destination: '',
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  destination: {},
   id: 0,
   isFavorite: false,
   offers: {
     type: '',
-    offers: [
-      {
-        id: 0,
-        title: '',
-        price: 0
-      }
-    ]
+    offers: [],
   },
-  type: '',
+  type: 'taxi',
 };
+
 const editPointTemplate = (point) => {
   const { destination, offers, dateFrom, dateTo, basePrice } = point;
   const renderEventItem = (offerTypes) => offerTypes.map((offer) =>
@@ -119,10 +114,11 @@ export default class EditPointView extends AbstractStatefulView {
   _restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setEditClickHandler(this._callback.editClick);
   };
 
   #setInnerHandlers = () => {
-    this.element.querySelector('.event__type-list').addEventListener('change', this.#offersToggleHandler);
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#typeToggleHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
   };
 
@@ -136,11 +132,11 @@ export default class EditPointView extends AbstractStatefulView {
     });
   };
 
-  #offersToggleHandler = (evt) => {
+  #typeToggleHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
       type: evt.target.value,
-      offers: { type: evt.target.value,  offers: this._state.offers.offers},
+      offers: { type: evt.target.value, offers: this._state.offers.offers },
     });
   };
 
