@@ -6,16 +6,19 @@ const BLANK_POINT = {
   basePrice: 0,
   dateFrom: new Date(),
   dateTo: new Date(),
-  destination: {},
+  destination: {
+    name: '',
+    description: '',
+    pictures: []
+  },
   id: 0,
   isFavorite: false,
   offers: {
-    type: '',
+    type: offerType[0],
     offers: [],
   },
-  type: 'taxi',
+  type: offerType[0],
 };
-
 const editPointTemplate = (point) => {
   const { destination, offers, dateFrom, dateTo, basePrice } = point;
   const renderEventItem = (offerTypes) => offerTypes.map((offer) =>
@@ -34,9 +37,9 @@ const editPointTemplate = (point) => {
       </label>
     </div>`)
   ).join('');
-  const renderDestinationPhoto = (destinationPhotos) => destinationPhotos.map((photo) => (
+  const renderDestinationPhoto = (destinationPhotos) => (destinationPhotos) ? destinationPhotos.map((photo) => (
     `<img class="event__photo" src=${photo.src} alt="Event photo">`)
-  ).join('');
+  ).join('') : '';
 
   return (
     `<li class="trip-events__item">
@@ -133,18 +136,15 @@ export default class EditPointView extends AbstractStatefulView {
   #destinationToggleHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      destination: {
-        description: `${evt.target.value}, is a beautiful city, a true asian pearl, with crowded streets.`,
-        name: evt.target.value
-      }
-    });
+      destination: evt.target.value
+    }
+    );
   };
 
   #typeToggleHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
       type: evt.target.value,
-      offers: { type: evt.target.value, offers: this._state.offers.offers },
     });
   };
 

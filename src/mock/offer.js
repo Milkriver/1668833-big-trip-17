@@ -1,3 +1,5 @@
+import { getRandomInteger } from '../utils/common';
+
 export const offerType = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'
 ];
@@ -86,4 +88,4 @@ export const offers = [
     ]
   }
 ];
-export const generateOffer = (type) => offers.find((offer) => offer.type === type);
+export const generateOffer = () => offers[getRandomInteger(0, offers.length-1)];

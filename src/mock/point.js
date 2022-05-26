@@ -14,16 +14,14 @@ const generateDate = (from, to) => {
   return new Date(Math.floor(Math.random() * (dateTo - dateFrom + 1) + dateFrom));
 };
 
-export const generatePoint = () => {
-  const type = generateRandomMock(pointType);
-  return {
+export const generatePoint = () => (
+  {
     basePrice: getRandomInteger(10, 1000),
     dateFrom: generateDate('2021-01-01', '2021-01-15'),
     dateTo: generateDate('2021-01-16', '2021-01-30'),
     destination: generateDestination(),
     id: nanoid(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offers: generateOffer(type),
-    type: type,
-  };
-};
+    offers: generateOffer(),
+    type: generateRandomMock(pointType),
+  });
