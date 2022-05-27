@@ -3,6 +3,9 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
 import { offersList } from '../mock/offer';
 import { destinationsList } from '../mock/destination';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -21,7 +24,7 @@ const BLANK_POINT = {
 const editPointTemplate = (point) => {
   const { destination, type, dateFrom, dateTo, basePrice } = point;
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
-  const destinationInformation = destinationsList.find((element) => ((element.name === destination.name)));
+
 
   const renderEventItem = (offerTypes) => offerTypes.map((offer) =>
     `<div class="event__type-item">
@@ -68,7 +71,7 @@ const editPointTemplate = (point) => {
             <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destinationInformation.name} list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination.name} list="destination-list-1">
             <datalist id="destination-list-1">
               ${renderDestinationDatalist(destinationsList)}
             </datalist>
@@ -99,10 +102,10 @@ const editPointTemplate = (point) => {
           </section>
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description"> ${destinationInformation.description}</p>
+            <p class="event__destination-description"> ${destination.description}</p>
             <div class="event__photos-container">
             <div class="event__photos-tape">
-            ${renderDestinationPhoto(destinationInformation.pictures)}
+            ${renderDestinationPhoto(destination.pictures)}
             </div>
           </div>
           </section>
@@ -113,20 +116,70 @@ const editPointTemplate = (point) => {
 };
 
 export default class EditPointView extends AbstractStatefulView {
+  #dateFromPicker = null;
+  #dateToPicker = null;
+
   constructor(point = BLANK_POINT) {
     super();
 
     this._state = point;
     this.#setInnerHandlers();
+    this.#setDatepicker();
   }
 
   get template() {
     return editPointTemplate(this._state);
   }
 
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
+    }
+
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
+    }
+  };
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
+
+  #setDatepicker = () => {
+    this.#dateFromPicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateFrom,
+        onChange: this.#dateFromChangeHandler,
+      },
+    );
+    this.#dateToPicker = flatpickr(this.element.querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler,
+      });
+  };
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();
+    this.#setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setEditClickHandler(this._callback.editClick);
   };
@@ -138,8 +191,9 @@ export default class EditPointView extends AbstractStatefulView {
 
   #destinationToggleHandler = (evt) => {
     evt.preventDefault();
+    const destinationInformation = destinationsList.find((element) => ((element.name === evt.target.value)));
     this.updateElement({
-      destination: { name: evt.target.value }
+      destination: destinationInformation
     }
     );
   };
