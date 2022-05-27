@@ -1,7 +1,6 @@
 import { nanoid } from 'nanoid';
 import { generateRandomMock, getRandomInteger } from '../utils/common.js';
 import { generateDestination } from './destination.js';
-import { generateOffer } from './offer';
 
 const pointType = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'
@@ -22,6 +21,6 @@ export const generatePoint = () => (
     destination: generateDestination(),
     id: nanoid(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offers: generateOffer(),
+    offers: [1, 2, 3],
     type: generateRandomMock(pointType),
   });

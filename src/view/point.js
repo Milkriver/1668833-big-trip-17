@@ -1,8 +1,9 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointDatetimeDueDate, humanizePointDatetimeDueTime, humanizePointDueDate, humanizePointDueTime, timeDifferenceHours, timeDifferenceMinutes } from '../utils/common.js';
+import { offersList } from '../mock/offer';
 
 const createPointTemplate = (point) => {
-  const { dateFrom, dateTo, destination, type, basePrice, isFavorite, offers } = point;
+  const { dateFrom, dateTo, destination, type, basePrice, isFavorite } = point;
   const date = humanizePointDueDate(dateFrom);
   const timeFrom = humanizePointDueTime(dateFrom);
   const timeTo = humanizePointDueTime(dateTo);
@@ -10,6 +11,7 @@ const createPointTemplate = (point) => {
   const datetimeTimeFrom = humanizePointDatetimeDueTime(dateFrom);
   const datetimeTimeTo = humanizePointDatetimeDueTime(dateTo);
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
+  const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
 
   const renderEventOffer = (eventOffers) => eventOffers.map((eventOffer) =>
     `<li class="event__offer">
@@ -40,7 +42,7 @@ const createPointTemplate = (point) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${renderEventOffer(offers.offers)}
+        ${renderEventOffer(offersListByType)}
         </ul>
         <button class="event__favorite-btn ${favoriteClassName}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -56,7 +58,7 @@ const createPointTemplate = (point) => {
   );
 };
 
-export default class PointView extends AbstractView{
+export default class PointView extends AbstractView {
   #point = null;
 
   constructor(point) {

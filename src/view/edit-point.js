@@ -1,6 +1,8 @@
 import { offerType } from '../mock/offer.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
+import { offersList } from '../mock/offer';
+import { destinationsList } from '../mock/destination';
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -13,14 +15,14 @@ const BLANK_POINT = {
   },
   id: 0,
   isFavorite: false,
-  offers: {
-    type: offerType[0],
-    offers: [],
-  },
+  offers: [],
   type: offerType[0],
 };
 const editPointTemplate = (point) => {
-  const { destination, offers, dateFrom, dateTo, basePrice } = point;
+  const { destination, type, dateFrom, dateTo, basePrice } = point;
+  const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
+  const destinationInformation = destinationsList.find((element) => ((element.name === destination.name)));
+
   const renderEventItem = (offerTypes) => offerTypes.map((offer) =>
     `<div class="event__type-item">
       <input id="event-type-${offer}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer}">
@@ -40,6 +42,9 @@ const editPointTemplate = (point) => {
   const renderDestinationPhoto = (destinationPhotos) => (destinationPhotos) ? destinationPhotos.map((photo) => (
     `<img class="event__photo" src=${photo.src} alt="Event photo">`)
   ).join('') : '';
+  const renderDestinationDatalist = (destinationNames) => destinationNames.map((destinationName) => (
+    `<option value=${destinationName.name}></option>`)
+  ).join('');
 
   return (
     `<li class="trip-events__item">
@@ -47,7 +52,7 @@ const editPointTemplate = (point) => {
         <header class="event__header">
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1"><span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${offers.type}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -61,13 +66,11 @@ const editPointTemplate = (point) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-            ${offers.type}
+            ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination.name} list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destinationInformation.name} list="destination-list-1">
             <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
+              ${renderDestinationDatalist(destinationsList)}
             </datalist>
           </div>
 
@@ -91,15 +94,15 @@ const editPointTemplate = (point) => {
           <section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
-              ${renderOfferItem(offers.offers)}
+              ${renderOfferItem(offersListByType)}
             </div>
           </section>
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description"> ${destination.description}</p>
+            <p class="event__destination-description"> ${destinationInformation.description}</p>
             <div class="event__photos-container">
             <div class="event__photos-tape">
-            ${renderDestinationPhoto(destination.pictures)}
+            ${renderDestinationPhoto(destinationInformation.pictures)}
             </div>
           </div>
           </section>
@@ -136,7 +139,7 @@ export default class EditPointView extends AbstractStatefulView {
   #destinationToggleHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      destination: evt.target.value
+      destination: { name: evt.target.value }
     }
     );
   };

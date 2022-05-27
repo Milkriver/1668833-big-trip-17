@@ -4,7 +4,7 @@ export const offerType = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'
 ];
 
-export const offers = [
+export const offersList = [
   {
     'type': 'taxi',
     'offers':
@@ -88,4 +88,4 @@ export const offers = [
     ]
   }
 ];
-export const generateOffer = () => offers[getRandomInteger(0, offers.length-1)];
+export const generateOffer = () => offersList[getRandomInteger(0, offersList.length-1)];

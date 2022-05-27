@@ -1,6 +1,6 @@
 import { getRandomInteger } from '../utils/common';
 
-export const destinations = [
+export const destinationsList = [
   {
     name: 'Chamonix',
     description: 'Chamonix, is a beautiful city, with crowded streets, middle-eastern paradise, a perfect place to stay with a family.',
@@ -97,4 +97,4 @@ export const destinations = [
   },
 ];
 
-export const generateDestination = () => destinations[getRandomInteger(0, 2)];
+export const generateDestination = () => destinationsList[getRandomInteger(0, 2)];
