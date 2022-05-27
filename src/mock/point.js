@@ -1,26 +1,11 @@
 import { nanoid } from 'nanoid';
 import { generateRandomMock, getRandomInteger } from '../utils/common.js';
-import { generateOffer } from './offer';
+import { generateDestination } from './destination.js';
 
 const pointType = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'
 ];
-const pointDestination = [
-  'London', 'Moscow', 'Amsterdam', 'Tokio', 'Paris', 'Ekaterinburg', 'Ottawa', 'Toronto', 'Lissabon'
-];
 
-const generateDestination = () => (
-  {
-    description: `${generateRandomMock(pointDestination)}, is a beautiful city, a true asian pearl, with crowded streets.`,
-    name: `${generateRandomMock(pointDestination)}`,
-    pictures: [
-      {
-        'src': 'http://picsum.photos/300/200?r=0.0762563005163317',
-        'description': `${generateRandomMock(pointDestination)} parliament building`
-      }
-    ]
-  }
-);
 const generateDate = (from, to) => {
   const dateFrom = Date.parse(from);
   const dateTo = Date.parse(to);
@@ -36,7 +21,6 @@ export const generatePoint = () => (
     destination: generateDestination(),
     id: nanoid(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offers: generateOffer(),
+    offers: [1, 2, 3],
     type: generateRandomMock(pointType),
-  }
-);
+  });

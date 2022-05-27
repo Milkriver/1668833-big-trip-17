@@ -1,15 +1,35 @@
-import AbstractView from '../framework/view/abstract-view.js';
 import { offerType } from '../mock/offer.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
+import { offersList } from '../mock/offer';
+import { destinationsList } from '../mock/destination';
 
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  destination: {
+    name: '',
+    description: '',
+    pictures: []
+  },
+  id: 0,
+  isFavorite: false,
+  offers: [],
+  type: offerType[0],
+};
 const editPointTemplate = (point) => {
-  const { destination, offers } = point;
+  const { destination, type, dateFrom, dateTo, basePrice } = point;
+  const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
+  const destinationInformation = destinationsList.find((element) => ((element.name === destination.name)));
+
   const renderEventItem = (offerTypes) => offerTypes.map((offer) =>
     `<div class="event__type-item">
       <input id="event-type-${offer}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer}">
       <label class="event__type-label  event__type-label--${offer}" for="event-type-${offer}-1">${offer}</label>
     </div>`
   ).join('');
-  const renderOfferItem = (offerItems) => offerItems.map((offer) =>
+  const renderOfferItem = (offerItems) => offerItems.map((offer) => (
     `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-offer-${offer.id}">
       <label class="event__offer-label" for="event-offer-${offer.id}">
@@ -17,7 +37,13 @@ const editPointTemplate = (point) => {
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
       </label>
-    </div>`
+    </div>`)
+  ).join('');
+  const renderDestinationPhoto = (destinationPhotos) => (destinationPhotos) ? destinationPhotos.map((photo) => (
+    `<img class="event__photo" src=${photo.src} alt="Event photo">`)
+  ).join('') : '';
+  const renderDestinationDatalist = (destinationNames) => destinationNames.map((destinationName) => (
+    `<option value=${destinationName.name}></option>`)
   ).join('');
 
   return (
@@ -26,7 +52,7 @@ const editPointTemplate = (point) => {
         <header class="event__header">
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1"><span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -40,26 +66,24 @@ const editPointTemplate = (point) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              Flight
+            ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destinationInformation.name} list="destination-list-1">
             <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
+              ${renderDestinationDatalist(destinationsList)}
             </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25">&mdash;
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeEditPointDatetimeDueTime(dateFrom)}">&mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeEditPointDatetimeDueTime(dateTo)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
             <label class="event__label" for="event-price-1"><span class="visually-hidden">Price</span>&euro;</label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="160">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value=${basePrice}>
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -70,12 +94,17 @@ const editPointTemplate = (point) => {
           <section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
-              ${renderOfferItem(offers.offers)}
+              ${renderOfferItem(offersListByType)}
             </div>
           </section>
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description"> ${destination.description}</p>
+            <p class="event__destination-description"> ${destinationInformation.description}</p>
+            <div class="event__photos-container">
+            <div class="event__photos-tape">
+            ${renderDestinationPhoto(destinationInformation.pictures)}
+            </div>
+          </div>
           </section>
         </section>
       </form>
@@ -83,18 +112,44 @@ const editPointTemplate = (point) => {
   );
 };
 
-export default class EditPointView extends AbstractView {
-  #point = null;
-
-  constructor(point) {
+export default class EditPointView extends AbstractStatefulView {
+  constructor(point = BLANK_POINT) {
     super();
 
-    this.#point = point;
+    this._state = point;
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return editPointTemplate(this.#point);
+    return editPointTemplate(this._state);
   }
+
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setEditClickHandler(this._callback.editClick);
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#typeToggleHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
+  };
+
+  #destinationToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      destination: { name: evt.target.value }
+    }
+    );
+  };
+
+  #typeToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      type: evt.target.value,
+    });
+  };
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
@@ -103,7 +158,7 @@ export default class EditPointView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(this._state);
   };
 
   setEditClickHandler = (callback) => {
