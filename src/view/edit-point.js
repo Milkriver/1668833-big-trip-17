@@ -217,16 +217,18 @@ export default class EditPointView extends AbstractStatefulView {
 
   #offersToggleHandler = (evt) => {
     evt.preventDefault();
-    const checkedFunction = () => {
-      if (this._state.offers.find((element) => (element === Number(evt.target.id)))) {
-        return this._state.offers.filter((element) => element !== Number(evt.target.id));
-      } else {
-        this._state.offers.push(Number(evt.target.id));
-        return this._state.offers;
-      }
-    };
+    const selectedOfferId = Number(evt.target.id);
+
+    let updatedOffers;
+    if (this._state.offers.find((element) => (element === selectedOfferId))) {
+      updatedOffers = this._state.offers.filter((element) => element !== selectedOfferId);
+    } else {
+      updatedOffers = [...this._state.offers];
+      updatedOffers.push(selectedOfferId);
+    }
+
     this.updateElement({
-      offers: checkedFunction(),
+      offers: updatedOffers,
     });
   };
 
