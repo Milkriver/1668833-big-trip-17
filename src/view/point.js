@@ -1,9 +1,8 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointDatetimeDueDate, humanizePointDatetimeDueTime, humanizePointDueDate, humanizePointDueTime, timeDifferenceHours, timeDifferenceMinutes } from '../utils/common.js';
 import { offersList } from '../mock/offer';
-
 const createPointTemplate = (point) => {
-  const { dateFrom, dateTo, destination, type, basePrice, isFavorite } = point;
+  const { dateFrom, dateTo, destination, type, basePrice, isFavorite, offers } = point;
   const date = humanizePointDueDate(dateFrom);
   const timeFrom = humanizePointDueTime(dateFrom);
   const timeTo = humanizePointDueTime(dateTo);
@@ -12,7 +11,11 @@ const createPointTemplate = (point) => {
   const datetimeTimeTo = humanizePointDatetimeDueTime(dateTo);
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
-
+  const checkedOffers = offersListByType.filter((offer) => {
+    for (let index = 0; index < offers.length; index++) {
+      if (offer.id === offers[index]) { return offer; }
+    }
+  });
   const renderEventOffer = (eventOffers) => eventOffers.map((eventOffer) =>
     `<li class="event__offer">
       <span class="event__offer-title">${eventOffer.title}</span>
@@ -42,7 +45,7 @@ const createPointTemplate = (point) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-        ${renderEventOffer(offersListByType)}
+        ${renderEventOffer(checkedOffers)}
         </ul>
         <button class="event__favorite-btn ${favoriteClassName}" type="button">
           <span class="visually-hidden">Add to favorite</span>

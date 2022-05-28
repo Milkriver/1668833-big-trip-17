@@ -21,26 +21,35 @@ const BLANK_POINT = {
   offers: [],
   type: offerType[0],
 };
+
 const editPointTemplate = (point) => {
-  const { destination, type, dateFrom, dateTo, basePrice } = point;
+  const { destination, type, dateFrom, dateTo, basePrice, offers } = point;
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
-
-
+  const checkedOffers = offersListByType.filter((offer) => {
+    for (let index = 0; index < offers.length; index++) {
+      if (offer.id === offers[index]) { return offer; }
+    }
+  });
   const renderEventItem = (offerTypes) => offerTypes.map((offer) =>
     `<div class="event__type-item">
       <input id="event-type-${offer}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer}">
       <label class="event__type-label  event__type-label--${offer}" for="event-type-${offer}-1">${offer}</label>
     </div>`
   ).join('');
-  const renderOfferItem = (offerItems) => offerItems.map((offer) => (
-    `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-offer-${offer.id}">
-      <label class="event__offer-label" for="event-offer-${offer.id}">
+  const renderOfferItem = (offerItems) => offerItems.map((offer) => {
+    const isOfferChecked = checkedOffers.find((checkedOffer) => checkedOffer.id === offer.id);
+    return (
+      `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${offer.id}"
+      ${(isOfferChecked) ? 'checked' : ''}
+      >
+      <label class="event__offer-label" for="${offer.id}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
       </label>
-    </div>`)
+    </div>`);
+  }
   ).join('');
   const renderDestinationPhoto = (destinationPhotos) => (destinationPhotos) ? destinationPhotos.map((photo) => (
     `<img class="event__photo" src=${photo.src} alt="Event photo">`)
@@ -187,11 +196,12 @@ export default class EditPointView extends AbstractStatefulView {
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-list').addEventListener('change', this.#typeToggleHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersToggleHandler);
   };
 
   #destinationToggleHandler = (evt) => {
     evt.preventDefault();
-    const destinationInformation = destinationsList.find((element) => ((element.name === evt.target.value)));
+    const destinationInformation = destinationsList.find((element) => (element.name === evt.target.value));
     this.updateElement({
       destination: destinationInformation
     }
@@ -202,6 +212,21 @@ export default class EditPointView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       type: evt.target.value,
+    });
+  };
+
+  #offersToggleHandler = (evt) => {
+    evt.preventDefault();
+    const checkedFunction = () => {
+      if (this._state.offers.find((element) => (element === Number(evt.target.id)))) {
+        return this._state.offers.filter((element) => element !== Number(evt.target.id));
+      } else {
+        this._state.offers.push(Number(evt.target.id));
+        return this._state.offers;
+      }
+    };
+    this.updateElement({
+      offers: checkedFunction(),
     });
   };
 
