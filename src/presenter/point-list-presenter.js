@@ -12,9 +12,9 @@ export default class PointListPresenter {
   #pointModel = null;
 
   #pointListComponent = new PointListView();
-  #sortComponent = null;
   #tripInfoComponent = new TripInfoView();
   #noPointComponent = new NoPointScreenView;
+  #sortComponent = null;
 
   #pointPresenter = new Map();
   #currentSortType = SortType.DAY;
@@ -22,6 +22,7 @@ export default class PointListPresenter {
   constructor(boardContainer, pointModel) {
     this.#pointListContainer = boardContainer;
     this.#pointModel = pointModel;
+
     this.#pointModel.addObserver(this.#handleModelEvent);
   }
 
@@ -69,15 +70,10 @@ export default class PointListPresenter {
         this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        this.#clearBoard({ resetSortType: true });
+        this.#clearBoard();
         this.#renderBoard();
         break;
     }
-  };
-
-  #renderTripInfo = () => {
-    const siteTripMainElement = document.querySelector('.trip-main');
-    render(this.#tripInfoComponent, siteTripMainElement, RenderPosition.AFTERBEGIN);
   };
 
   #handleSortTypeChange = (sortType) => {
@@ -107,14 +103,9 @@ export default class PointListPresenter {
     }
   };
 
-  #renderPointList = () => {
+  #renderPointList = (sortedPoints) => {
     render(this.#pointListComponent, this.#pointListContainer);
-    this.#renderList([...this.#pointModel.points]);
-  };
-
-  #clearPointList = () => {
-    this.#pointPresenter.forEach((presenter) => presenter.destroy());
-    this.#pointPresenter.clear();
+    this.#renderList(sortedPoints);
   };
 
   #clearBoard = ({ resetSortType = false } = {}) => {
@@ -129,17 +120,23 @@ export default class PointListPresenter {
     }
   };
 
+  #renderTripInfo = () => {
+    const siteTripMainElement = document.querySelector('.trip-main');
+    render(this.#tripInfoComponent, siteTripMainElement, RenderPosition.AFTERBEGIN);
+  };
+
   #renderBoard = () => {
     const points = this.points;
     const pointCount = points.length;
+
     if (pointCount === 0) {
       render(this.#noPointComponent, this.#pointListContainer);
       return;
     }
+
     this.#renderTripInfo();
     this.#renderSort();
-    this.#renderPointList();
-    render(this.#pointListComponent, this.#pointListContainer);
+
     this.#renderPointList(points);
   };
 

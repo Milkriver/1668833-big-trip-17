@@ -1,3 +1,4 @@
+import { UpdateType, UserAction } from '../const';
 import { remove, render, replace } from '../framework/render';
 import EditPointView from '../view/edit-point';
 import PointView from '../view/point';
@@ -8,12 +9,14 @@ const Mode = {
 };
 
 export default class PointPresenter {
-  #point = null;
-  #pointComponent = null;
-  #pointEditComponent = null;
   #pointListContainer = null;
   #changeData = null;
   #changeMode = null;
+
+  #pointComponent = null;
+  #pointEditComponent = null;
+
+  #point = null;
   #mode = Mode.DEFAULT;
 
   constructor(pointListContainer, changeData, changeMode) {
@@ -60,6 +63,7 @@ export default class PointPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   };
@@ -80,6 +84,7 @@ export default class PointPresenter {
   #onEscKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   };
@@ -93,11 +98,18 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (point) => {
-    this.#changeData(point);
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point);
     this.#replaceFormToPoint();
   };
 
   #handleFavoriteClick = () => {
-    this.#changeData({ ...this.#point, isFavorite: !this.#point.isFavorite });
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      { ...this.#point, isFavorite: !this.#point.isFavorite },
+    );
   };
 }
