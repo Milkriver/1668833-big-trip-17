@@ -21,7 +21,6 @@ const BLANK_POINT = {
   offers: [],
   type: offerType[0],
 };
-
 const editPointTemplate = (point) => {
   const { destination, type, dateFrom, dateTo, basePrice, offers } = point;
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
@@ -134,6 +133,7 @@ export default class EditPointView extends AbstractStatefulView {
     this._state = point;
     this.#setInnerHandlers();
     this.#setDatepicker();
+    this.setDeleteClickHandler();
   }
 
   get template() {
@@ -191,6 +191,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.#setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setEditClickHandler(this._callback.editClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   };
 
   #setInnerHandlers = () => {
@@ -232,6 +233,16 @@ export default class EditPointView extends AbstractStatefulView {
     });
   };
 
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
+  };
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(EditPointView.parseStateToPoint(this._state));
+  };
+
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
@@ -250,5 +261,12 @@ export default class EditPointView extends AbstractStatefulView {
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  };
+
+  static parsePointToState = (point) => ({ ...point });
+
+  static parseStateToPoint = (state) => {
+    const point = { ...state };
+    return point;
   };
 }
