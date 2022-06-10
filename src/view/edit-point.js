@@ -4,7 +4,6 @@ import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
 import { offersList } from '../mock/offer';
 import { destinationsList } from '../mock/destination';
 import flatpickr from 'flatpickr';
-
 import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {

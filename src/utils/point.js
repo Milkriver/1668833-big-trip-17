@@ -11,4 +11,14 @@ const sortPointDuration = (pointA, pointB) => {
   return timeDifferencePointB - timeDifferencePointA;
 };
 
-export { sortPointDay, sortPointDuration, sortPointPrice };
+const isPointInFuture = (date) => {
+  const today = new Date;
+  dayjs(date.dateFrom).diff(dayjs(today.dateFrom));
+};
+
+const isPointInPast = (date) => {
+  const today = new Date;
+  dayjs(today.dateFrom).diff(dayjs(date.dateFrom));
+};
+
+export { sortPointDay, sortPointDuration, sortPointPrice, isPointInFuture, isPointInPast };
