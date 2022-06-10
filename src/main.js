@@ -12,7 +12,7 @@ render(new NewEventButtonView(), siteTripMainElement);
 const tripEventsElement = document.querySelector('.trip-events');
 const pointModel = new PointModel();
 const filterModel = new FilterModel();
-const pointListPresenter = new PointListPresenter(tripEventsElement, pointModel);
+const pointListPresenter = new PointListPresenter(tripEventsElement, pointModel, filterModel);
 const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointModel);
 filterPresenter.init();
 pointListPresenter.init();

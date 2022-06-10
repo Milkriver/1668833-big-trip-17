@@ -12,13 +12,13 @@ const sortPointDuration = (pointA, pointB) => {
 };
 
 const isPointInFuture = (date) => {
-  const today = new Date;
-  dayjs(date.dateFrom).diff(dayjs(today.dateFrom));
+  const today = dayjs();
+  return dayjs(date).diff(today, 'days') > 0;
 };
 
 const isPointInPast = (date) => {
-  const today = new Date;
-  dayjs(today.dateFrom).diff(dayjs(date.dateFrom));
+  const today = dayjs();
+  return dayjs(today).diff(dayjs(date)) > 0;
 };
 
 export { sortPointDay, sortPointDuration, sortPointPrice, isPointInFuture, isPointInPast };

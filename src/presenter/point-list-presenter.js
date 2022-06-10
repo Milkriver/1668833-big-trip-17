@@ -6,10 +6,12 @@ import TripInfoView from '../view/trip-info.js';
 import PointPresenter from './point-presenter.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
 import { sortPointDay, sortPointDuration, sortPointPrice } from '../utils/point.js';
+import { filter } from '../utils/filter.js';
 
 export default class PointListPresenter {
   #pointListContainer = null;
   #pointModel = null;
+  #filterModel = null;
 
   #pointListComponent = new PointListView();
   #tripInfoComponent = new TripInfoView();
@@ -19,23 +21,28 @@ export default class PointListPresenter {
   #pointPresenter = new Map();
   #currentSortType = SortType.DAY;
 
-  constructor(boardContainer, pointModel) {
+  constructor(boardContainer, pointModel, filterModel) {
     this.#pointListContainer = boardContainer;
     this.#pointModel = pointModel;
+    this.#filterModel = filterModel;
 
     this.#pointModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
+    const filterType = this.#filterModel.filter;
+    const points = this.#pointModel.points;
+    const filteredPoints = filter[filterType](points);
     switch (this.#currentSortType) {
       case SortType.DAY:
-        return [...this.#pointModel.points].sort(sortPointDay);
+        return filteredPoints.sort(sortPointDay);
       case SortType.TIME:
-        return [...this.#pointModel.points].sort(sortPointDuration);
+        return filteredPoints.sort(sortPointDuration);
       case SortType.PRICE:
-        return [...this.#pointModel.points].sort(sortPointPrice);
+        return filteredPoints.sort(sortPointPrice);
     }
-    return this.#pointModel.points;
+    return filteredPoints;
   }
 
   init = () => {
