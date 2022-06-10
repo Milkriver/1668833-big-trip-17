@@ -1,3 +1,4 @@
+import he from 'he';
 import { offerType } from '../mock/offer.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
@@ -80,7 +81,7 @@ const editPointTemplate = (data) => {
             <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" list="destination-list-1" value=${destination.name} >
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" list="destination-list-1" value=${he.encode(destination.name)} >
             <datalist id="destination-list-1">
               ${renderDestinationDatalist(destinationsList)}
             </datalist>
