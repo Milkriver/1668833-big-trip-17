@@ -7,6 +7,7 @@ import PointPresenter from './point-presenter.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortPointDay, sortPointDuration, sortPointPrice } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
+import NewPointPresenter from './new-point-presenter.js';
 
 export default class PointListPresenter {
   #pointListContainer = null;
@@ -19,6 +20,7 @@ export default class PointListPresenter {
   #sortComponent = null;
 
   #pointPresenter = new Map();
+  #newPointPresenter = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
@@ -27,6 +29,7 @@ export default class PointListPresenter {
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
 
+    this.#newPointPresenter = new NewPointPresenter(this.#pointListComponent.element, this.#handleViewAction);
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -50,7 +53,14 @@ export default class PointListPresenter {
     this.#renderBoard();
   };
 
+  createTask = (callback) => {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointPresenter.init(callback);
+  };
+
   #handleModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
 
@@ -117,6 +127,7 @@ export default class PointListPresenter {
   };
 
   #clearBoard = ({ resetSortType = false } = {}) => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
 
