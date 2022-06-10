@@ -4,7 +4,7 @@ import PointListView from '../view/point-list.js';
 import NoPointScreenView from '../view/no-point-screen.js';
 import TripInfoView from '../view/trip-info.js';
 import PointPresenter from './point-presenter.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortPointDay, sortPointDuration, sortPointPrice } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
 
@@ -15,11 +15,12 @@ export default class PointListPresenter {
 
   #pointListComponent = new PointListView();
   #tripInfoComponent = new TripInfoView();
-  #noPointComponent = new NoPointScreenView;
+  #noPointComponent = null;
   #sortComponent = null;
 
   #pointPresenter = new Map();
   #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
 
   constructor(boardContainer, pointModel, filterModel) {
     this.#pointListContainer = boardContainer;
@@ -31,9 +32,9 @@ export default class PointListPresenter {
   }
 
   get points() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
-    const filteredPoints = filter[filterType](points);
+    const filteredPoints = filter[this.#filterType](points);
     switch (this.#currentSortType) {
       case SortType.DAY:
         return filteredPoints.sort(sortPointDay);
@@ -120,7 +121,10 @@ export default class PointListPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
-    remove(this.#noPointComponent);
+
+    if (this.#noPointComponent) {
+      remove(this.#noPointComponent);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
@@ -137,6 +141,7 @@ export default class PointListPresenter {
     const pointCount = points.length;
 
     if (pointCount === 0) {
+      this.#noPointComponent = new NoPointScreenView(this.#filterType);
       render(this.#noPointComponent, this.#pointListContainer);
       return;
     }
