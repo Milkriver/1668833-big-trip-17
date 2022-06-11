@@ -6,21 +6,7 @@ import { offersList } from '../mock/offer';
 import { destinationsList } from '../mock/destination';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-
-const BLANK_POINT = {
-  basePrice: 0,
-  dateFrom: new Date(),
-  dateTo: new Date(),
-  destination: {
-    name: '',
-    description: '',
-    pictures: []
-  },
-  id: 0,
-  isFavorite: false,
-  offers: [],
-  type: offerType[0],
-};
+import { BLANK_POINT } from '../const.js';
 
 const editPointTemplate = (data) => {
   const { destination, type, dateFrom, dateTo, basePrice, offers } = data;
@@ -31,33 +17,61 @@ const editPointTemplate = (data) => {
     }
   });
 
-  const renderEventItem = (offerTypes) => offerTypes.map((offer) =>
-    `<div class="event__type-item">
-      <input id="event-type-${offer}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer}">
-      <label class="event__type-label  event__type-label--${offer}" for="event-type-${offer}-1">${offer}</label>
-    </div>`
-  ).join('');
-  const renderOfferItem = (offerItems) => offerItems.map((offer) => {
+  const renderEventItem = (offerTypes) => offerTypes
+    .map((offer) =>
+      `<div class="event__type-item">
+        <input id="event-type-${offer}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer}">
+        <label class="event__type-label  event__type-label--${offer}" for="event-type-${offer}-1">${offer}</label>
+      </div>`)
+    .join('');
+
+  const renderOfferItem = (offer) => {
     const isOfferChecked = checkedOffers.find((checkedOffer) => checkedOffer.id === offer.id);
     return (
       `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${offer.id}"
-      ${(isOfferChecked) ? 'checked' : ''}
-      >
-      <label class="event__offer-label" for="${offer.id}">
-        <span class="event__offer-title">${offer.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-      </label>
-    </div>`);
-  }
-  ).join('');
+        <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${offer.id}" ${(isOfferChecked) ? 'checked' : ''} >
+        <label class="event__offer-label" for="${offer.id}">
+          <span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+        </label>
+      </div>`
+    );
+  };
+
+  const renderOffers = (offerItems) => {
+    if (offerItems.length === 0) { return ''; }
+
+    const offerList = offerItems.map(renderOfferItem)
+      .join('');
+
+    return `
+      <section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+          ${offerList}
+        </div>
+      </section>
+    `;
+  };
   const renderDestinationPhoto = (destinationPhotos) => (destinationPhotos) ? destinationPhotos.map((photo) => (
     `<img class="event__photo" src=${photo.src} alt="Event photo">`)
   ).join('') : '';
+
   const renderDestinationDatalist = (destinationNames) => destinationNames.map((destinationName) => (
     `<option value=${destinationName.name}></option>`)
   ).join('');
+
+  const renderDestination = (destinationItem) => {
+    if (destinationItem.name === '') { return ''; }
+    return `
+    <section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description"> ${destinationItem.description}</p>
+      <div class="event__photos-container">
+        <div class="event__photos-tape">${renderDestinationPhoto(destinationItem.pictures)}</div>
+      </div>
+    </section>
+`;
+  };
 
   return (
     `<li class="trip-events__item">
@@ -104,21 +118,8 @@ const editPointTemplate = (data) => {
           <button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>
         </header>
         <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-            <div class="event__available-offers">
-              ${renderOfferItem(offersListByType)}
-            </div>
-          </section>
-          <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description"> ${destination.description}</p>
-            <div class="event__photos-container">
-            <div class="event__photos-tape">
-            ${renderDestinationPhoto(destination.pictures)}
-            </div>
-          </div>
-          </section>
+          ${renderOffers(offersListByType)}
+          ${renderDestination(destination)}
         </section>
       </form>
     </li > `
@@ -205,7 +206,9 @@ export default class EditPointView extends AbstractStatefulView {
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-list').addEventListener('change', this.#typeToggleHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersToggleHandler);
+    if (this.element.querySelector('.event__available-offers') !== null) {
+      this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersToggleHandler);
+    }
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceToggleHandler);
   };
 
@@ -224,6 +227,7 @@ export default class EditPointView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       type: evt.target.value,
+      offers:[],
     });
   };
 
