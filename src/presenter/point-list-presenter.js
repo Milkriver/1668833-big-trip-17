@@ -14,13 +14,14 @@ export default class PointListPresenter {
   #pointModel = null;
   #filterModel = null;
 
+  #pointPresenter = new Map();
+  #newPointPresenter = null;
+
   #pointListComponent = new PointListView();
   #tripInfoComponent = new TripInfoView();
   #noPointComponent = null;
   #sortComponent = null;
 
-  #pointPresenter = new Map();
-  #newPointPresenter = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
@@ -38,13 +39,11 @@ export default class PointListPresenter {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
     const filteredPoints = filter[this.#filterType](points);
+
     switch (this.#currentSortType) {
-      case SortType.DAY:
-        return filteredPoints.sort(sortPointDay);
-      case SortType.TIME:
-        return filteredPoints.sort(sortPointDuration);
-      case SortType.PRICE:
-        return filteredPoints.sort(sortPointPrice);
+      case SortType.DAY: return filteredPoints.sort(sortPointDay);
+      case SortType.TIME: return filteredPoints.sort(sortPointDuration);
+      case SortType.PRICE: return filteredPoints.sort(sortPointPrice);
     }
     return filteredPoints;
   }
@@ -53,7 +52,7 @@ export default class PointListPresenter {
     this.#renderBoard();
   };
 
-  createTask = (callback) => {
+  createPoint = (callback) => {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init(callback);
@@ -66,38 +65,23 @@ export default class PointListPresenter {
 
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
-      case UserAction.UPDATE_POINT:
-        this.#pointModel.updatePoint(updateType, update);
-        break;
-      case UserAction.ADD_POINT:
-        this.#pointModel.addPoint(updateType, update);
-        break;
-      case UserAction.DELETE_POINT:
-        this.#pointModel.deletePoint(updateType, update);
-        break;
+      case UserAction.UPDATE_POINT: this.#pointModel.updatePoint(updateType, update); break;
+      case UserAction.ADD_POINT: this.#pointModel.addPoint(updateType, update); break;
+      case UserAction.DELETE_POINT: this.#pointModel.deletePoint(updateType, update); break;
     }
   };
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
-      case UpdateType.PATCH:
-        this.#pointPresenter.get(data.id).init(data);
-        break;
-      case UpdateType.MINOR:
-        this.#clearBoard();
-        this.#renderBoard();
-        break;
-      case UpdateType.MAJOR:
-        this.#clearBoard();
-        this.#renderBoard();
-        break;
+      case UpdateType.PATCH: this.#pointPresenter.get(data.id).init(data); break;
+      case UpdateType.MINOR: this.#clearBoard(); this.#renderBoard(); break;
+      case UpdateType.MAJOR: this.#clearBoard({ resetSortType: true }); this.#renderBoard(); break;
     }
   };
 
   #handleSortTypeChange = (sortType) => {
-    if (this.#currentSortType === sortType) {
-      return;
-    }
+    if (this.#currentSortType === sortType) { return; }
+
     this.#currentSortType = sortType;
     this.#clearBoard();
     this.#renderBoard();
@@ -133,10 +117,7 @@ export default class PointListPresenter {
 
     remove(this.#sortComponent);
 
-    if (this.#noPointComponent) {
-      remove(this.#noPointComponent);
-    }
-
+    if (this.#noPointComponent) { remove(this.#noPointComponent); }
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
     }
@@ -159,7 +140,6 @@ export default class PointListPresenter {
 
     this.#renderTripInfo();
     this.#renderSort();
-
     this.#renderPointList(points);
   };
 

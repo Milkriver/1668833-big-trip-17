@@ -17,7 +17,6 @@ const SortTypes = [
     type: 'day',
     title: 'Day',
     sortType: SortType.DAY,
-    additional: 'checked',
   },
   {
     type: 'event',
