@@ -16,11 +16,11 @@ export default class DestinationModel extends Observable{
 
   init = async () => {
     try {
-      this.#destinations = await this.#destinationApiService.destinations;
+      const destinations = await this.#destinationApiService.destinations;
+      this.#destinations = destinations;
     } catch(err) {
       this.#destinations = [];
     }
     this._notify(UpdateType .INIT);
   };
-
 }

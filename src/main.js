@@ -38,7 +38,6 @@ const handleNewPointButtonClick = () => {
   newPointButtonComponent.element.disabled = true;
 };
 
-
 filterPresenter.init();
 pointListPresenter.init();
 pointModel.init()
