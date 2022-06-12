@@ -21,6 +21,6 @@ export const generatePoint = () => (
     destination: generateDestination(),
     id: nanoid(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offers: [1, 2, 3],
+    offers: [1,2,5],
     type: generateRandomMock(pointType),
   });
