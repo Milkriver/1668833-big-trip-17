@@ -6,15 +6,30 @@ import { offersList } from '../mock/offer';
 import { destinationsList } from '../mock/destination';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { BLANK_POINT } from '../const.js';
+
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  destination: {
+    name: '',
+    description: '',
+    pictures: []
+  },
+  id: 0,
+  isFavorite: false,
+  offers: [],
+  type: offerType[0],
+};
 
 const editPointTemplate = (data) => {
   const { destination, type, dateFrom, dateTo, basePrice, offers } = data;
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
   const checkedOffers = offersListByType.filter((offer) => {
     for (let index = 0; index < offers.length; index++) {
-      if (offer.id === offers[index]) { return offer; }
+      if (offer.id === offers[index]) { return true; }
     }
+    return false;
   });
 
   const renderEventItem = (offerTypes) => offerTypes
