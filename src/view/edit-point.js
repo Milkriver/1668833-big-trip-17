@@ -23,7 +23,7 @@ const BLANK_POINT = {
 };
 
 const editPointTemplate = (data) => {
-  const { destination, type, dateFrom, dateTo, basePrice, offers } = data;
+  const { destination, type, dateFrom, dateTo, basePrice, offers, id } = data;
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
   const checkedOffers = offersListByType.filter((offer) => {
     for (let index = 0; index < offers.length; index++) {
@@ -31,6 +31,16 @@ const editPointTemplate = (data) => {
     }
     return false;
   });
+
+  const renderRollupButton = (pointId) => {
+    if (pointId === 0) { return ''; }
+    return (
+      `<button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>`
+    );
+  };
+
 
   const renderEventItem = (offerTypes) => offerTypes
     .map((offer) =>
@@ -130,7 +140,7 @@ const editPointTemplate = (data) => {
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>
+          ${renderRollupButton(id)}
         </header>
         <section class="event__details">
           ${renderOffers(offersListByType)}
@@ -242,7 +252,7 @@ export default class EditPointView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       type: evt.target.value,
-      offers:[],
+      offers: [],
     });
   };
 
