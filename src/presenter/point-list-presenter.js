@@ -8,6 +8,7 @@ import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortPointDay, sortPointDuration, sortPointPrice } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
 import NewPointPresenter from './new-point-presenter.js';
+import LoadingView from '../view/loading.js';
 
 export default class PointListPresenter {
   #pointListContainer = null;
@@ -19,11 +20,13 @@ export default class PointListPresenter {
 
   #pointListComponent = new PointListView();
   #tripInfoComponent = new TripInfoView();
+  #loadingComponent = new LoadingView();
   #noPointComponent = null;
   #sortComponent = null;
 
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   constructor(boardContainer, pointModel, filterModel) {
     this.#pointListContainer = boardContainer;
@@ -76,6 +79,7 @@ export default class PointListPresenter {
       case UpdateType.PATCH: this.#pointPresenter.get(data.id).init(data); break;
       case UpdateType.MINOR: this.#clearBoard(); this.#renderBoard(); break;
       case UpdateType.MAJOR: this.#clearBoard({ resetSortType: true }); this.#renderBoard(); break;
+      case UpdateType.INIT: this.#isLoading = false; remove(this.#loadingComponent); this.#renderBoard(); break;
     }
   };
 
@@ -110,12 +114,17 @@ export default class PointListPresenter {
     this.#renderList(sortedPoints);
   };
 
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#pointListComponent.element, RenderPosition.AFTERBEGIN);
+  };
+
   #clearBoard = ({ resetSortType = false } = {}) => {
     this.#newPointPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noPointComponent) { remove(this.#noPointComponent); }
     if (resetSortType) {
@@ -129,6 +138,10 @@ export default class PointListPresenter {
   };
 
   #renderBoard = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     const points = this.points;
     const pointCount = points.length;
 
