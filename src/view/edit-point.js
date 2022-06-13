@@ -154,10 +154,13 @@ const editPointTemplate = (data) => {
 export default class EditPointView extends AbstractStatefulView {
   #dateFromPicker = null;
   #dateToPicker = null;
+  #offersList = null;
+  #destinationsList = null;
 
   constructor(point = BLANK_POINT) {
     super();
-
+    this.#offersList = offersList;
+    this.#destinationsList = destinationsList;
     this._state = EditPointView.parsePointToState(point);
     this.#setInnerHandlers();
     this.#setDatepicker();
@@ -165,7 +168,7 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   get template() {
-    return editPointTemplate(this._state);
+    return editPointTemplate(this._state, this.#offersList, this.#destinationsList);
   }
 
   removeElement = () => {

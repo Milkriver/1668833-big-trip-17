@@ -51,6 +51,14 @@ export default class PointListPresenter {
     return filteredPoints;
   }
 
+  get offers() {
+    return this.#pointModel.offers;
+  }
+
+  get destinations() {
+    return this.#pointModel.destinations;
+  }
+
   init = () => {
     this.#renderBoard();
   };
@@ -99,7 +107,7 @@ export default class PointListPresenter {
 
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#pointListComponent.element, this.#handleViewAction, this.#handleModeChange);
-    pointPresenter.init(point);
+    pointPresenter.init(point, this.offers, this.destinations);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
