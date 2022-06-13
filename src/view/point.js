@@ -1,8 +1,8 @@
 import he from 'he';
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointDatetimeDueDate, humanizePointDatetimeDueTime, humanizePointDueDate, humanizePointDueTime, timeDifferenceHours, timeDifferenceMinutes } from '../utils/common.js';
-import { offersList } from '../mock/offer';
-const createPointTemplate = (point) => {
+
+const createPointTemplate = (point, offersList) => {
   const { dateFrom, dateTo, destination, type, basePrice, isFavorite, offers } = point;
   const date = humanizePointDueDate(dateFrom);
   const timeFrom = humanizePointDueTime(dateFrom);
@@ -64,15 +64,17 @@ const createPointTemplate = (point) => {
 
 export default class PointView extends AbstractView {
   #point = null;
+  #offersList = null;
 
-  constructor(point) {
+  constructor(point, offersList) {
     super();
 
     this.#point = point;
+    this.#offersList = offersList;
   }
 
   get template() {
-    return createPointTemplate(this.#point);
+    return createPointTemplate(this.#point, this.#offersList);
   }
 
   setEditClickHandler = (callback) => {

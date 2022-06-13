@@ -1,21 +1,53 @@
 import he from 'he';
-import { offerType } from '../mock/offer.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
-import { offersList } from '../mock/offer';
-import { destinationsList } from '../mock/destination';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { BLANK_POINT } from '../const.js';
 
-const editPointTemplate = (data) => {
-  const { destination, type, dateFrom, dateTo, basePrice, offers } = data;
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  destination: {
+    name: '',
+    description: '',
+    pictures: []
+  },
+  id: 0,
+  isFavorite: false,
+  offers: [],
+  type: 'taxi',
+};
+
+const editPointTemplate = (data, offersList, destinationsList) => {
+  const { destination, type, dateFrom, dateTo, basePrice, offers, id } = data;
+  const offerType = offersList.map((offer) => {
+    if (!offer) {
+      return;
+    }
+    return offer.type;
+  });
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
   const checkedOffers = offersListByType.filter((offer) => {
     for (let index = 0; index < offers.length; index++) {
-      if (offer.id === offers[index]) { return offer; }
+      if (offer.id === offers[index]) {
+        return true;
+      }
     }
+    return false;
   });
+
+  const renderRollupButton = (pointId) => {
+    if (pointId === 0) {
+      return '';
+    }
+    return (
+      `<button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>`
+    );
+  };
+
 
   const renderEventItem = (offerTypes) => offerTypes
     .map((offer) =>
@@ -38,7 +70,9 @@ const editPointTemplate = (data) => {
   };
 
   const renderOffers = (offerItems) => {
-    if (offerItems.length === 0) { return ''; }
+    if (offerItems.length === 0) {
+      return '';
+    }
 
     const offerList = offerItems.map(renderOfferItem)
       .join('');
@@ -61,7 +95,9 @@ const editPointTemplate = (data) => {
   ).join('');
 
   const renderDestination = (destinationItem) => {
-    if (destinationItem.name === '') { return ''; }
+    if (destinationItem.name === '') {
+      return '';
+    }
     return `
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -115,7 +151,7 @@ const editPointTemplate = (data) => {
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>
+          ${renderRollupButton(id)}
         </header>
         <section class="event__details">
           ${renderOffers(offersListByType)}
@@ -129,10 +165,13 @@ const editPointTemplate = (data) => {
 export default class EditPointView extends AbstractStatefulView {
   #dateFromPicker = null;
   #dateToPicker = null;
+  #offersList = null;
+  #destinationsList = null;
 
-  constructor(point = BLANK_POINT) {
+  constructor(offersList, destinationsList, point = BLANK_POINT) {
     super();
-
+    this.#offersList = offersList;
+    this.#destinationsList = destinationsList;
     this._state = EditPointView.parsePointToState(point);
     this.#setInnerHandlers();
     this.#setDatepicker();
@@ -140,7 +179,7 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   get template() {
-    return editPointTemplate(this._state);
+    return editPointTemplate(this._state, this.#offersList, this.#destinationsList);
   }
 
   removeElement = () => {
@@ -214,7 +253,8 @@ export default class EditPointView extends AbstractStatefulView {
 
   #destinationToggleHandler = (evt) => {
     evt.preventDefault();
-    const destinationInformation = destinationsList.find((element) => (element.name === evt.target.value));
+    const destinationInformation = this.#destinationsList.find((element) => (element.name === evt.target.value));
+
     if (destinationInformation) {
       this.updateElement({
         destination: destinationInformation
@@ -227,7 +267,7 @@ export default class EditPointView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       type: evt.target.value,
-      offers:[],
+      offers: [],
     });
   };
 
@@ -277,7 +317,9 @@ export default class EditPointView extends AbstractStatefulView {
 
   setEditClickHandler = (callback) => {
     this._callback.editClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    if (this.element.querySelector('.event__rollup-btn')) {
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    }
   };
 
   #editClickHandler = (evt) => {

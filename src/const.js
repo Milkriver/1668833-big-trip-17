@@ -1,25 +1,9 @@
-import { offerType } from './mock/offer';
-
 const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PAST: 'past',
 };
 
-const BLANK_POINT = {
-  basePrice: 0,
-  dateFrom: new Date(),
-  dateTo: new Date(),
-  destination: {
-    name: '',
-    description: '',
-    pictures: []
-  },
-  id: 0,
-  isFavorite: false,
-  offers: [],
-  type: offerType[0],
-};
 const SortType = {
   DAY: 'day',
   EVENT: 'event',
@@ -68,6 +52,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
-export { FilterType, SortTypes, SortType, UserAction, UpdateType, BLANK_POINT };
+export { FilterType, SortTypes, SortType, UserAction, UpdateType };
