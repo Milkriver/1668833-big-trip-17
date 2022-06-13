@@ -4,7 +4,6 @@ import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const BLANK_POINT_TYPE = ['taxi'];
 const BLANK_POINT = {
   basePrice: 0,
   dateFrom: new Date(),
@@ -17,25 +16,31 @@ const BLANK_POINT = {
   id: 0,
   isFavorite: false,
   offers: [],
-  type: BLANK_POINT_TYPE[0],
+  type: 'taxi',
 };
 
 const editPointTemplate = (data, offersList, destinationsList) => {
   const { destination, type, dateFrom, dateTo, basePrice, offers, id } = data;
   const offerType = offersList.map((offer) => {
-    if (!offer) { return; }
+    if (!offer) {
+      return;
+    }
     return offer.type;
   });
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
   const checkedOffers = offersListByType.filter((offer) => {
     for (let index = 0; index < offers.length; index++) {
-      if (offer.id === offers[index]) { return true; }
+      if (offer.id === offers[index]) {
+        return true;
+      }
     }
     return false;
   });
 
   const renderRollupButton = (pointId) => {
-    if (pointId === 0) { return ''; }
+    if (pointId === 0) {
+      return '';
+    }
     return (
       `<button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
@@ -65,7 +70,9 @@ const editPointTemplate = (data, offersList, destinationsList) => {
   };
 
   const renderOffers = (offerItems) => {
-    if (offerItems.length === 0) { return ''; }
+    if (offerItems.length === 0) {
+      return '';
+    }
 
     const offerList = offerItems.map(renderOfferItem)
       .join('');
@@ -88,7 +95,9 @@ const editPointTemplate = (data, offersList, destinationsList) => {
   ).join('');
 
   const renderDestination = (destinationItem) => {
-    if (destinationItem.name === '') { return ''; }
+    if (destinationItem.name === '') {
+      return '';
+    }
     return `
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>

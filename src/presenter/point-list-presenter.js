@@ -84,10 +84,22 @@ export default class PointListPresenter {
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
-      case UpdateType.PATCH: this.#pointPresenter.get(data.id).init(data); break;
-      case UpdateType.MINOR: this.#clearBoard(); this.#renderBoard(); break;
-      case UpdateType.MAJOR: this.#clearBoard({ resetSortType: true }); this.#renderBoard(); break;
-      case UpdateType.INIT: this.#isLoading = false; remove(this.#loadingComponent); this.#renderBoard(); break;
+      case UpdateType.PATCH:
+        this.#pointPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearBoard();
+        this.#renderBoard();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearBoard({ resetSortType: true });
+        this.#renderBoard();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
 
