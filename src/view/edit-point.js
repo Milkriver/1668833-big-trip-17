@@ -1,12 +1,10 @@
 import he from 'he';
-import { offerType } from '../mock/offer.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
-import { offersList } from '../mock/offer';
-import { destinationsList } from '../mock/destination';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
+const BLANK_POINT_TYPE = ['taxi'];
 const BLANK_POINT = {
   basePrice: 0,
   dateFrom: new Date(),
@@ -19,11 +17,15 @@ const BLANK_POINT = {
   id: 0,
   isFavorite: false,
   offers: [],
-  type: offerType[0],
+  type: BLANK_POINT_TYPE[0],
 };
 
-const editPointTemplate = (data) => {
+const editPointTemplate = (data, offersList, destinationsList) => {
   const { destination, type, dateFrom, dateTo, basePrice, offers, id } = data;
+  const offerType = offersList.map((offer) => {
+    if (!offer) { return; }
+    return offer.type;
+  });
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
   const checkedOffers = offersListByType.filter((offer) => {
     for (let index = 0; index < offers.length; index++) {
@@ -157,7 +159,7 @@ export default class EditPointView extends AbstractStatefulView {
   #offersList = null;
   #destinationsList = null;
 
-  constructor(point = BLANK_POINT) {
+  constructor(point = BLANK_POINT, offersList, destinationsList) {
     super();
     this.#offersList = offersList;
     this.#destinationsList = destinationsList;
@@ -242,7 +244,8 @@ export default class EditPointView extends AbstractStatefulView {
 
   #destinationToggleHandler = (evt) => {
     evt.preventDefault();
-    const destinationInformation = destinationsList.find((element) => (element.name === evt.target.value));
+    const destinationInformation = this.#destinationsList.find((element) => (element.name === evt.target.value));
+
     if (destinationInformation) {
       this.updateElement({
         destination: destinationInformation
