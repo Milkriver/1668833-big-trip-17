@@ -32,10 +32,10 @@ export default class PointListPresenter {
     this.#pointListContainer = boardContainer;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
-
     this.#newPointPresenter = new NewPointPresenter(this.#pointListComponent.element, this.#handleViewAction);
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+
   }
 
   get points() {
@@ -66,7 +66,7 @@ export default class PointListPresenter {
   createPoint = (callback) => {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newPointPresenter.init(callback);
+    this.#newPointPresenter.init(callback, this.#pointModel.offers, this.#pointModel.destinations);
   };
 
   #handleModeChange = () => {

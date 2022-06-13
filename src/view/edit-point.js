@@ -159,7 +159,7 @@ export default class EditPointView extends AbstractStatefulView {
   #offersList = null;
   #destinationsList = null;
 
-  constructor(point = BLANK_POINT, offersList, destinationsList) {
+  constructor(offersList, destinationsList, point = BLANK_POINT) {
     super();
     this.#offersList = offersList;
     this.#destinationsList = destinationsList;
