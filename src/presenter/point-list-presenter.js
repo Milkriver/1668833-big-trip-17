@@ -1,4 +1,5 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import NoPointScreenView from '../view/no-point-screen.js';
@@ -10,6 +11,10 @@ import { filter } from '../utils/filter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import LoadingView from '../view/loading.js';
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 export default class PointListPresenter {
   #pointListContainer = null;
   #pointModel = null;
@@ -27,6 +32,7 @@ export default class PointListPresenter {
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   constructor(boardContainer, pointModel, filterModel) {
     this.#pointListContainer = boardContainer;
@@ -75,6 +81,7 @@ export default class PointListPresenter {
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenter.get(update.id).setSaving();
@@ -96,11 +103,12 @@ export default class PointListPresenter {
         this.#pointPresenter.get(update.id).setDeleting();
         try {
           await this.#pointModel.deletePoint(updateType, update);
-        } catch(err) {
+        } catch (err) {
           this.#pointPresenter.get(update.id).setAborting();
         }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
