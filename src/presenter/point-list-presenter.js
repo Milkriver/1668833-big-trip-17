@@ -1,4 +1,5 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import NoPointScreenView from '../view/no-point-screen.js';
@@ -10,6 +11,10 @@ import { filter } from '../utils/filter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import LoadingView from '../view/loading.js';
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 export default class PointListPresenter {
   #pointListContainer = null;
   #pointModel = null;
@@ -19,14 +24,16 @@ export default class PointListPresenter {
   #newPointPresenter = null;
 
   #pointListComponent = new PointListView();
-  #tripInfoComponent = new TripInfoView();
   #loadingComponent = new LoadingView();
+
   #noPointComponent = null;
   #sortComponent = null;
+  #tripInformationComponent = null;
 
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   constructor(boardContainer, pointModel, filterModel) {
     this.#pointListContainer = boardContainer;
@@ -48,6 +55,7 @@ export default class PointListPresenter {
       case SortType.TIME: return filteredPoints.sort(sortPointDuration);
       case SortType.PRICE: return filteredPoints.sort(sortPointPrice);
     }
+
     return filteredPoints;
   }
 
@@ -74,12 +82,35 @@ export default class PointListPresenter {
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
-      case UserAction.UPDATE_POINT: this.#pointModel.updatePoint(updateType, update); break;
-      case UserAction.ADD_POINT: this.#pointModel.addPoint(updateType, update); break;
-      case UserAction.DELETE_POINT: this.#pointModel.deletePoint(updateType, update); break;
+      case UserAction.UPDATE_POINT:
+        this.#pointPresenter.get(update.id).setSaving();
+        try {
+          await this.#pointModel.updatePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenter.get(update.id).setAborting();
+        }
+        break;
+      case UserAction.ADD_POINT:
+        this.#newPointPresenter.setSaving();
+        try {
+          await this.#pointModel.addPoint(updateType, update);
+        } catch (err) {
+          this.#newPointPresenter.setAborting();
+        }
+        break;
+      case UserAction.DELETE_POINT:
+        this.#pointPresenter.get(update.id).setDeleting();
+        try {
+          await this.#pointModel.deletePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenter.get(update.id).setAborting();
+        }
+        break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
@@ -145,16 +176,20 @@ export default class PointListPresenter {
 
     remove(this.#sortComponent);
     remove(this.#loadingComponent);
+    remove(this.#tripInformationComponent);
 
-    if (this.#noPointComponent) { remove(this.#noPointComponent); }
+    if (this.#noPointComponent) {
+      remove(this.#noPointComponent);
+    }
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
     }
   };
 
   #renderTripInfo = () => {
+    this.#tripInformationComponent = new TripInfoView(this.points, this.offers);
     const siteTripMainElement = document.querySelector('.trip-main');
-    render(this.#tripInfoComponent, siteTripMainElement, RenderPosition.AFTERBEGIN);
+    render(this.#tripInformationComponent, siteTripMainElement, RenderPosition.AFTERBEGIN);
   };
 
   #renderBoard = () => {
@@ -170,10 +205,8 @@ export default class PointListPresenter {
       render(this.#noPointComponent, this.#pointListContainer);
       return;
     }
-
     this.#renderTripInfo();
     this.#renderSort();
     this.#renderPointList(points);
   };
-
 }
