@@ -6,7 +6,7 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import NewEventButtonView from './view/new-event-button.js';
 import PointApiService from './point-api-service';
 
-const AUTHORIZATION = 'Basic kS2sfS55wcl1sa3j';
+const AUTHORIZATION = 'Basic kS2sfS55w00cl2sa3j';
 const END_POINT = 'https://17.ecmascript.pages.academy/big-trip';
 
 const siteTripMainElement = document.querySelector('.trip-main');

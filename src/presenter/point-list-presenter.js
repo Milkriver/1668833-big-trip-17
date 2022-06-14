@@ -55,6 +55,7 @@ export default class PointListPresenter {
       case SortType.TIME: return filteredPoints.sort(sortPointDuration);
       case SortType.PRICE: return filteredPoints.sort(sortPointPrice);
     }
+
     return filteredPoints;
   }
 
@@ -97,7 +98,7 @@ export default class PointListPresenter {
         try {
           await this.#pointModel.addPoint(updateType, update);
         } catch (err) {
-          this.#newPointPresenter.get(update.id).setAborting();
+          this.#newPointPresenter.setAborting();
         }
         break;
       case UserAction.DELETE_POINT:
