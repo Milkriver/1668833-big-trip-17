@@ -20,7 +20,7 @@ const BLANK_POINT = {
 };
 
 const editPointTemplate = (data, offersList, destinationsList) => {
-  const { destination, type, dateFrom, dateTo, basePrice, offers, id } = data;
+  const { destination, type, dateFrom, dateTo, basePrice, offers, id, isDisabled, isSaving, isDeleting, } = data;
   const offerType = offersList.map((offer) => {
     if (!offer) {
       return;
@@ -131,7 +131,7 @@ const editPointTemplate = (data, offersList, destinationsList) => {
             <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" list="destination-list-1" value=${he.encode(destination.name)} >
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" list="destination-list-1" ${isDisabled ? 'disabled' : ''} value=${he.encode(destination.name)} >
             <datalist id="destination-list-1">
               ${renderDestinationDatalist(destinationsList)}
             </datalist>
@@ -139,9 +139,9 @@ const editPointTemplate = (data, offersList, destinationsList) => {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeEditPointDatetimeDueTime(dateFrom)}">&mdash;
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" ${isDisabled ? 'disabled' : ''} value="${humanizeEditPointDatetimeDueTime(dateFrom)}">&mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeEditPointDatetimeDueTime(dateTo)}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" ${isDisabled ? 'disabled' : ''} value="${humanizeEditPointDatetimeDueTime(dateTo)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -149,8 +149,8 @@ const editPointTemplate = (data, offersList, destinationsList) => {
             <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" name="event-price" value=${basePrice}>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}> ${isSaving ? 'Saving...' : 'Save'}</button>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
           ${renderRollupButton(id)}
         </header>
         <section class="event__details">
@@ -274,7 +274,7 @@ export default class EditPointView extends AbstractStatefulView {
   #priceToggleHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      basePrice: evt.target.value,
+      basePrice:  Number(evt.target.value),
     });
   };
 
@@ -327,10 +327,18 @@ export default class EditPointView extends AbstractStatefulView {
     this._callback.editClick();
   };
 
-  static parsePointToState = (point) => ({ ...point });
+  static parsePointToState = (point) => ({
+    ...point,
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
+  });
 
   static parseStateToPoint = (state) => {
     const point = { ...state };
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
     return point;
   };
 }
