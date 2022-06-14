@@ -11,7 +11,6 @@ const pointDate = (points) => {
       ${humanizePointDueDate(sortedPoints[sortedPoints.length - 1].dateTo)}
     </p>`
   );
-
 };
 
 const totalPrice = (points, offers) => {
@@ -24,15 +23,15 @@ const totalPrice = (points, offers) => {
       const checkedOffersByType = offersByType.offers.find((offer) => offer.id === points[i].offers[k]);
       price = price + checkedOffersByType.price;
     }
-    totalOffersPrice = totalOffersPrice + price;
+    totalOffersPrice += price;
   }
-  points.map((point) => (totalPointsPrice = totalPointsPrice + point.basePrice));
+  points.forEach((point) => (totalPointsPrice = totalPointsPrice + point.basePrice));
   const total = totalOffersPrice + totalPointsPrice;
   return (
     `<p class="trip-info__cost">
       Total: &euro;&nbsp;
       <span class="trip-info__cost-value">
-      ${total}
+        ${total}
       </span>
     </p>`
   );
@@ -47,7 +46,7 @@ const pointDestinationList = (points) => {
     }
   }
   if (destinationList.length > 3) {
-    return `<h1 class="trip-info__title"> ${destinationList[0]} ... ${destinationList[destinationList.length - 1]}</h1>`;
+    return `<h1 class="trip-info__title"> ${destinationList[0]}  &mdash; ...  &mdash; ${destinationList[destinationList.length - 1]}</h1>`;
   }
   if (destinationList.length === 3) {
     return `<h1 class="trip-info__title"> ${destinationList[0]} &mdash; ${destinationList[1]} &mdash; ${destinationList[2]}</h1>`;
