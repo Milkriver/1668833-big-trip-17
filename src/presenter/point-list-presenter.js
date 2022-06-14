@@ -24,10 +24,11 @@ export default class PointListPresenter {
   #newPointPresenter = null;
 
   #pointListComponent = new PointListView();
-  #tripInfoComponent = new TripInfoView();
   #loadingComponent = new LoadingView();
+
   #noPointComponent = null;
   #sortComponent = null;
+  #tripInformationComponent = null;
 
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
@@ -174,16 +175,20 @@ export default class PointListPresenter {
 
     remove(this.#sortComponent);
     remove(this.#loadingComponent);
+    remove(this.#tripInformationComponent);
 
-    if (this.#noPointComponent) { remove(this.#noPointComponent); }
+    if (this.#noPointComponent) {
+      remove(this.#noPointComponent);
+    }
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
     }
   };
 
   #renderTripInfo = () => {
+    this.#tripInformationComponent = new TripInfoView(this.points, this.offers);
     const siteTripMainElement = document.querySelector('.trip-main');
-    render(this.#tripInfoComponent, siteTripMainElement, RenderPosition.AFTERBEGIN);
+    render(this.#tripInformationComponent, siteTripMainElement, RenderPosition.AFTERBEGIN);
   };
 
   #renderBoard = () => {
@@ -199,10 +204,8 @@ export default class PointListPresenter {
       render(this.#noPointComponent, this.#pointListContainer);
       return;
     }
-
     this.#renderTripInfo();
     this.#renderSort();
     this.#renderPointList(points);
   };
-
 }
