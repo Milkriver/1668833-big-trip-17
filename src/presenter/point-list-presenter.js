@@ -15,6 +15,23 @@ const TimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
+
+const totalPrice = (points, offers) => {
+  let totalOffersPrice = 0;
+  let totalPointsPrice = 0;
+  for (let i = 0; i < points.length; i++) {
+    const offersByType = offers.find((offer) => offer.type === points[i].type);
+    let price = 0;
+    for (let k = 0; k < points[i].offers.length; k++) {
+      const checkedOffersByType = offersByType.offers.find((offer) => offer.id === points[i].offers[k]);
+      price = price + checkedOffersByType.price;
+    }
+    totalOffersPrice += price;
+  }
+  points.forEach((point) => (totalPointsPrice = totalPointsPrice + point.basePrice));
+  const total = totalOffersPrice + totalPointsPrice;
+  return total;
+};
 export default class PointListPresenter {
   #pointListContainer = null;
   #pointModel = null;
@@ -25,7 +42,6 @@ export default class PointListPresenter {
 
   #pointListComponent = new PointListView();
   #loadingComponent = new LoadingView();
-
   #noPointComponent = null;
   #sortComponent = null;
   #tripInformationComponent = null;
@@ -39,7 +55,9 @@ export default class PointListPresenter {
     this.#pointListContainer = boardContainer;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
+
     this.#newPointPresenter = new NewPointPresenter(this.#pointListComponent.element, this.#handleViewAction);
+
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
 
@@ -51,9 +69,12 @@ export default class PointListPresenter {
     const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
-      case SortType.DAY: return filteredPoints.sort(sortPointDay);
-      case SortType.TIME: return filteredPoints.sort(sortPointDuration);
-      case SortType.PRICE: return filteredPoints.sort(sortPointPrice);
+      case SortType.DAY:
+        return filteredPoints.sort(sortPointDay);
+      case SortType.TIME:
+        return filteredPoints.sort(sortPointDuration);
+      case SortType.PRICE:
+        return filteredPoints.sort(sortPointPrice);
     }
 
     return filteredPoints;
@@ -74,7 +95,7 @@ export default class PointListPresenter {
   createPoint = (callback) => {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newPointPresenter.init(callback, this.#pointModel.offers, this.#pointModel.destinations);
+    this.#newPointPresenter.init(callback, this.offers, this.destinations);
   };
 
   #handleModeChange = () => {
@@ -84,6 +105,7 @@ export default class PointListPresenter {
 
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenter.get(update.id).setSaving();
@@ -187,7 +209,8 @@ export default class PointListPresenter {
   };
 
   #renderTripInfo = () => {
-    this.#tripInformationComponent = new TripInfoView(this.points, this.offers);
+    const total = totalPrice(this.points, this.offers);
+    this.#tripInformationComponent = new TripInfoView(this.points, total);
     const siteTripMainElement = document.querySelector('.trip-main');
     render(this.#tripInformationComponent, siteTripMainElement, RenderPosition.AFTERBEGIN);
   };

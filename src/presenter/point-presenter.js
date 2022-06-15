@@ -17,8 +17,6 @@ export default class PointPresenter {
   #pointEditComponent = null;
 
   #point = null;
-  #offersList = null;
-  #destinationsList = null;
   #mode = Mode.DEFAULT;
 
   constructor(pointListContainer, changeData, changeMode) {
@@ -106,7 +104,6 @@ export default class PointPresenter {
 
     this.#pointEditComponent.shake(resetFormState);
   };
-
 
   #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
