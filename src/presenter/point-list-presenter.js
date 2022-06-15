@@ -25,7 +25,6 @@ export default class PointListPresenter {
 
   #pointListComponent = new PointListView();
   #loadingComponent = new LoadingView();
-
   #noPointComponent = null;
   #sortComponent = null;
   #tripInformationComponent = null;
@@ -39,7 +38,9 @@ export default class PointListPresenter {
     this.#pointListContainer = boardContainer;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
+
     this.#newPointPresenter = new NewPointPresenter(this.#pointListComponent.element, this.#handleViewAction);
+
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
 
@@ -51,9 +52,12 @@ export default class PointListPresenter {
     const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
-      case SortType.DAY: return filteredPoints.sort(sortPointDay);
-      case SortType.TIME: return filteredPoints.sort(sortPointDuration);
-      case SortType.PRICE: return filteredPoints.sort(sortPointPrice);
+      case SortType.DAY:
+        return filteredPoints.sort(sortPointDay);
+      case SortType.TIME:
+        return filteredPoints.sort(sortPointDuration);
+      case SortType.PRICE:
+        return filteredPoints.sort(sortPointPrice);
     }
 
     return filteredPoints;
@@ -74,7 +78,7 @@ export default class PointListPresenter {
   createPoint = (callback) => {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newPointPresenter.init(callback, this.#pointModel.offers, this.#pointModel.destinations);
+    this.#newPointPresenter.init(callback, this.offers, this.destinations);
   };
 
   #handleModeChange = () => {
@@ -84,6 +88,7 @@ export default class PointListPresenter {
 
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenter.get(update.id).setSaving();
