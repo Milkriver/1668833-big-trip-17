@@ -24,11 +24,11 @@ const totalPrice = (points, offers) => {
     let price = 0;
     for (let k = 0; k < points[i].offers.length; k++) {
       const checkedOffersByType = offersByType.offers.find((offer) => offer.id === points[i].offers[k]);
-      price = price + checkedOffersByType.price;
+      price += checkedOffersByType.price;
     }
     totalOffersPrice += price;
   }
-  points.forEach((point) => (totalPointsPrice = totalPointsPrice + point.basePrice));
+  points.forEach((point) => (totalPointsPrice += point.basePrice));
   const total = totalOffersPrice + totalPointsPrice;
   return total;
 };
