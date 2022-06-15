@@ -15,6 +15,23 @@ const TimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
+
+const totalPrice = (points, offers) => {
+  let totalOffersPrice = 0;
+  let totalPointsPrice = 0;
+  for (let i = 0; i < points.length; i++) {
+    const offersByType = offers.find((offer) => offer.type === points[i].type);
+    let price = 0;
+    for (let k = 0; k < points[i].offers.length; k++) {
+      const checkedOffersByType = offersByType.offers.find((offer) => offer.id === points[i].offers[k]);
+      price = price + checkedOffersByType.price;
+    }
+    totalOffersPrice += price;
+  }
+  points.forEach((point) => (totalPointsPrice = totalPointsPrice + point.basePrice));
+  const total = totalOffersPrice + totalPointsPrice;
+  return total;
+};
 export default class PointListPresenter {
   #pointListContainer = null;
   #pointModel = null;
@@ -192,7 +209,8 @@ export default class PointListPresenter {
   };
 
   #renderTripInfo = () => {
-    this.#tripInformationComponent = new TripInfoView(this.points, this.offers);
+    const total = totalPrice(this.points, this.offers);
+    this.#tripInformationComponent = new TripInfoView(this.points, total);
     const siteTripMainElement = document.querySelector('.trip-main');
     render(this.#tripInformationComponent, siteTripMainElement, RenderPosition.AFTERBEGIN);
   };

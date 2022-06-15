@@ -13,30 +13,6 @@ const pointDate = (points) => {
   );
 };
 
-const totalPrice = (points, offers) => {
-  let totalOffersPrice = 0;
-  let totalPointsPrice = 0;
-  for (let i = 0; i < points.length; i++) {
-    const offersByType = offers.find((offer) => offer.type === points[i].type);
-    let price = 0;
-    for (let k = 0; k < points[i].offers.length; k++) {
-      const checkedOffersByType = offersByType.offers.find((offer) => offer.id === points[i].offers[k]);
-      price = price + checkedOffersByType.price;
-    }
-    totalOffersPrice += price;
-  }
-  points.forEach((point) => (totalPointsPrice = totalPointsPrice + point.basePrice));
-  const total = totalOffersPrice + totalPointsPrice;
-  return (
-    `<p class="trip-info__cost">
-      Total: &euro;&nbsp;
-      <span class="trip-info__cost-value">
-        ${total}
-      </span>
-    </p>`
-  );
-};
-
 const pointDestinationList = (points) => {
   const sortedPoints = points.sort(sortPointDay);
   const destinationList = sortedPoints.map((point) => point.destination.name);
@@ -59,27 +35,34 @@ const pointDestinationList = (points) => {
   }
 };
 
-const createTripInfoTemplate = (points, offers) => (
+const createTripInfoTemplate = (points, totalPrice) => (
   `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       ${pointDestinationList(points)}
       ${pointDate(points)}
     </div>
-    <p class="trip-info__cost">${totalPrice(points, offers)}</p>
+    <p class="trip-info__cost">
+      <p class="trip-info__cost">
+        Total: &euro;&nbsp;
+        <span class="trip-info__cost-value">
+          ${totalPrice}
+        </span>
+      </p>
+    </p>
   </section>`
 );
 
 export default class TripInfoView extends AbstractView {
   #points = null;
-  #offers = null;
+  #totalPrice = null;
 
-  constructor(points, offers) {
+  constructor(points, totalPrice) {
     super();
     this.#points = points;
-    this.#offers = offers;
+    this.#totalPrice = totalPrice;
   }
 
   get template() {
-    return createTripInfoTemplate(this.#points, this.#offers);
+    return createTripInfoTemplate(this.#points, this.#totalPrice);
   }
 }
