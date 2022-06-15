@@ -22,8 +22,8 @@ const totalPrice = (points, offers) => {
   for (let i = 0; i < points.length; i++) {
     const offersByType = offers.find((offer) => offer.type === points[i].type);
     let price = 0;
-    for (let k = 0; k < points[i].offers.length; k++) {
-      const checkedOffersByType = offersByType.offers.find((offer) => offer.id === points[i].offers[k]);
+    for (let j = 0; j < points[i].offers.length; j++) {
+      const checkedOffersByType = offersByType.offers.find((offer) => offer.id === points[i].offers[j]);
       price += checkedOffersByType.price;
     }
     totalOffersPrice += price;

@@ -47,7 +47,18 @@ const editPointTemplate = (data, offersList, destinationsList) => {
       </button>`
     );
   };
-
+  const renderCancelButton = (pointId) => {
+    if (pointId === 0) {
+      return (
+        `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+          ${isDeleting ? 'Canceling...' : 'Cancel'}
+        </button>`);
+    }
+    return (
+      `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+        ${isDeleting ? 'Deleting...' : 'Delete'}
+      </button>`);
+  };
 
   const renderEventItem = (offerTypes) => offerTypes
     .map((offer) =>
@@ -150,7 +161,7 @@ const editPointTemplate = (data, offersList, destinationsList) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}> ${isSaving ? 'Saving...' : 'Save'}</button>
-          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+          ${renderCancelButton(id)}
           ${renderRollupButton(id)}
         </header>
         <section class="event__details">
@@ -198,7 +209,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   reset = (point) => {
     this.updateElement(
-      EditPointView.parseTaskToState(point),
+      EditPointView.parsePointToState(point),
     );
   };
 
@@ -274,7 +285,7 @@ export default class EditPointView extends AbstractStatefulView {
   #priceToggleHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      basePrice:  Number(evt.target.value),
+      basePrice: Number(evt.target.value),
     });
   };
 

@@ -3,8 +3,8 @@ import { FilterType } from '../const.js';
 
 const NoPointTextType = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
-  [FilterType.FUTURE]: 'There are no future tasks',
-  [FilterType.PAST]: 'There are no past tasks',
+  [FilterType.FUTURE]: 'There are no future events now',
+  [FilterType.PAST]: 'There are no past events now',
 };
 
 const createNoPointsScreenTemplate = (filterType) => {
