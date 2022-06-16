@@ -182,11 +182,7 @@ export default class PointListPresenter {
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
-  #renderList = (list) => {
-    for (let i = 0; i < list.length; i++) {
-      this.#renderPoint(list[i]);
-    }
-  };
+  #renderList = (list) => list.forEach(this.#renderPoint);
 
   #renderPointList = (sortedPoints) => {
     render(this.#pointListComponent, this.#pointListContainer);

@@ -139,6 +139,7 @@ export default class PointPresenter {
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
       point);
+    document.removeEventListener('keydown', this.#onEscKeyDownHandler);
   };
 
   #handleDeleteClick = (point) => {
@@ -147,6 +148,7 @@ export default class PointPresenter {
       UpdateType.MINOR,
       point,
     );
+    document.removeEventListener('keydown', this.#onEscKeyDownHandler);
   };
 
   #handleFavoriteClick = () => {
