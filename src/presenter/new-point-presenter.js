@@ -13,7 +13,6 @@ export default class NewPointPresenter {
   constructor(pointListContainer, changeData) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
-
   }
 
   init = (callback, offersList, destinationsList) => {

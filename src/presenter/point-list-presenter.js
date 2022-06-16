@@ -60,7 +60,6 @@ export default class PointListPresenter {
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-
   }
 
   get points() {
@@ -115,6 +114,7 @@ export default class PointListPresenter {
           this.#pointPresenter.get(update.id).setAborting();
         }
         break;
+
       case UserAction.ADD_POINT:
         this.#newPointPresenter.setSaving();
         try {
@@ -123,6 +123,7 @@ export default class PointListPresenter {
           this.#newPointPresenter.setAborting();
         }
         break;
+
       case UserAction.DELETE_POINT:
         this.#pointPresenter.get(update.id).setDeleting();
         try {
@@ -140,14 +141,17 @@ export default class PointListPresenter {
       case UpdateType.PATCH:
         this.#pointPresenter.get(data.id).init(data);
         break;
+
       case UpdateType.MINOR:
         this.#clearBoard();
         this.#renderBoard();
         break;
+
       case UpdateType.MAJOR:
         this.#clearBoard({ resetSortType: true });
         this.#renderBoard();
         break;
+
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
@@ -157,7 +161,9 @@ export default class PointListPresenter {
   };
 
   #handleSortTypeChange = (sortType) => {
-    if (this.#currentSortType === sortType) { return; }
+    if (this.#currentSortType === sortType) {
+      return;
+    }
 
     this.#currentSortType = sortType;
     this.#clearBoard();

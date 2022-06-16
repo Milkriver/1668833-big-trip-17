@@ -21,21 +21,9 @@ const BLANK_POINT = {
 
 const editPointTemplate = (data, offersList, destinationsList) => {
   const { destination, type, dateFrom, dateTo, basePrice, offers, id, isDisabled, isSaving, isDeleting, } = data;
-  const offerType = offersList.map((offer) => {
-    if (!offer) {
-      return;
-    }
-    return offer.type;
-  });
+  const offersType = offersList.map((offer) => offer.type);
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
-  const checkedOffers = offersListByType.filter((offer) => {
-    for (let index = 0; index < offers.length; index++) {
-      if (offer.id === offers[index]) {
-        return true;
-      }
-    }
-    return false;
-  });
+  const checkedOffers = offersListByType.filter((offer) => offers.includes(offer.id));
 
   const renderRollupButton = (pointId) => {
     if (pointId === 0) {
@@ -97,9 +85,9 @@ const editPointTemplate = (data, offersList, destinationsList) => {
       </section>
     `;
   };
-  const renderDestinationPhoto = (destinationPhotos) => (destinationPhotos) ? destinationPhotos.map((photo) => (
+  const renderDestinationPhoto = (destinationPhotos) => destinationPhotos.map((photo) => (
     `<img class="event__photo" src=${photo.src} alt="Event photo">`)
-  ).join('') : '';
+  ).join('') ;
 
   const renderDestinationDatalist = (destinationNames) => destinationNames.map((destinationName) => (
     `<option value=${destinationName.name}></option>`)
@@ -133,7 +121,7 @@ const editPointTemplate = (data, offersList, destinationsList) => {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${renderEventItem(offerType)}
+                ${renderEventItem(offersType)}
               </fieldset >
             </div >
           </div >
