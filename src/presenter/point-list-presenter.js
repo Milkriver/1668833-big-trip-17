@@ -34,6 +34,7 @@ const totalPrice = (points, offers) => {
 };
 export default class PointListPresenter {
   #pointListContainer = null;
+  #siteTripMainElement = null;
   #pointModel = null;
   #filterModel = null;
 
@@ -51,8 +52,9 @@ export default class PointListPresenter {
   #isLoading = true;
   #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
-  constructor(boardContainer, pointModel, filterModel) {
+  constructor(boardContainer, pointModel, filterModel, siteTripMainElement) {
     this.#pointListContainer = boardContainer;
+    this.#siteTripMainElement = siteTripMainElement;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
 
@@ -213,8 +215,7 @@ export default class PointListPresenter {
   #renderTripInfo = () => {
     const total = totalPrice(this.points, this.offers);
     this.#tripInformationComponent = new TripInfoView(this.points, total);
-    const siteTripMainElement = document.querySelector('.trip-main');
-    render(this.#tripInformationComponent, siteTripMainElement, RenderPosition.AFTERBEGIN);
+    render(this.#tripInformationComponent, this.#siteTripMainElement, RenderPosition.AFTERBEGIN);
   };
 
   #renderBoard = () => {

@@ -14,12 +14,11 @@ const siteFilterElement = siteTripMainElement.querySelector('.trip-controls__fil
 const newPointButtonComponent = new NewEventButtonView();
 const pointApiService = new PointApiService(END_POINT, AUTHORIZATION);
 
-
 const tripEventsElement = document.querySelector('.trip-events');
 
 const pointModel = new PointModel(pointApiService);
 const filterModel = new FilterModel();
-const pointListPresenter = new PointListPresenter(tripEventsElement, pointModel, filterModel);
+const pointListPresenter = new PointListPresenter(tripEventsElement, pointModel, filterModel, siteTripMainElement);
 const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointModel);
 
 const handleNewPointFormClose = () => {
