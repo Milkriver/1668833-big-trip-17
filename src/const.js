@@ -55,4 +55,9 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-export { FilterType, SortTypes, SortType, UserAction, UpdateType };
+const PointMode = {
+  NEW: 'NEW',
+  EDIT: 'EDIT',
+};
+
+export { FilterType, SortTypes, SortType, UserAction, UpdateType, PointMode };

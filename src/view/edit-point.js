@@ -3,6 +3,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import { PointMode } from '../const.js';
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -19,14 +20,14 @@ const BLANK_POINT = {
   type: 'taxi',
 };
 
-const editPointTemplate = (data, offersList, destinationsList) => {
-  const { destination, type, dateFrom, dateTo, basePrice, offers, id, isDisabled, isSaving, isDeleting, } = data;
+const editPointTemplate = (data, offersList, destinationsList, pointMode) => {
+  const { destination, type, dateFrom, dateTo, basePrice, offers, isDisabled, isSaving, isDeleting } = data;
   const offersType = offersList.map((offer) => offer.type);
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
   const checkedOffers = offersListByType.filter((offer) => offers.includes(offer.id));
 
-  const renderRollupButton = (pointId) => {
-    if (pointId === 0) {
+  const renderRollupButton = (mode) => {
+    if (mode === 'NEW') {
       return '';
     }
     return (
@@ -35,16 +36,12 @@ const editPointTemplate = (data, offersList, destinationsList) => {
       </button>`
     );
   };
-  const renderCancelButton = (pointId) => {
-    if (pointId === 0) {
-      return (
-        `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
-          ${isDeleting ? 'Canceling...' : 'Cancel'}
-        </button>`);
-    }
+  const renderCancelButton = (mode) => {
+    const buttonName = (mode === 'NEW') ? 'Cancel' : 'Delete';
+    const buttonProcessName = (mode === 'NEW') ? 'Canceling' : 'Deleting';
     return (
       `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
-        ${isDeleting ? 'Deleting...' : 'Delete'}
+        ${isDeleting ? `${buttonProcessName}` : `${buttonName}`}
       </button>`);
   };
 
@@ -87,7 +84,7 @@ const editPointTemplate = (data, offersList, destinationsList) => {
   };
   const renderDestinationPhoto = (destinationPhotos) => destinationPhotos.map((photo) => (
     `<img class="event__photo" src=${photo.src} alt="Event photo">`)
-  ).join('') ;
+  ).join('');
 
   const renderDestinationDatalist = (destinationNames) => destinationNames.map((destinationName) => (
     `<option value=${destinationName.name}></option>`)
@@ -149,8 +146,8 @@ const editPointTemplate = (data, offersList, destinationsList) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}> ${isSaving ? 'Saving...' : 'Save'}</button>
-          ${renderCancelButton(id)}
-          ${renderRollupButton(id)}
+          ${renderCancelButton(pointMode)}
+          ${renderRollupButton(pointMode)}
         </header>
         <section class="event__details">
           ${renderOffers(offersListByType)}
@@ -166,11 +163,13 @@ export default class EditPointView extends AbstractStatefulView {
   #dateToPicker = null;
   #offersList = null;
   #destinationsList = null;
+  #pointMode = PointMode.EDIT;
 
-  constructor(offersList, destinationsList, point = BLANK_POINT) {
+  constructor(offersList, destinationsList, pointMode, point = BLANK_POINT) {
     super();
     this.#offersList = offersList;
     this.#destinationsList = destinationsList;
+    this.#pointMode = pointMode;
     this._state = EditPointView.parsePointToState(point);
     this.#setInnerHandlers();
     this.#setDatepicker();
@@ -178,7 +177,7 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   get template() {
-    return editPointTemplate(this._state, this.#offersList, this.#destinationsList);
+    return editPointTemplate(this._state, this.#offersList, this.#destinationsList, this.#pointMode);
   }
 
   removeElement = () => {
