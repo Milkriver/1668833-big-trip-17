@@ -60,4 +60,6 @@ const PointMode = {
   EDIT: 'EDIT',
 };
 
-export { FilterType, SortTypes, SortType, UserAction, UpdateType, PointMode };
+const EURO = '&euro;&nbsp;';
+
+export { FilterType, SortTypes, SortType, UserAction, UpdateType, PointMode, EURO };

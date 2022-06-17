@@ -3,7 +3,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeEditPointDatetimeDueTime } from '../utils/common.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { PointMode } from '../const.js';
+import { EURO, PointMode } from '../const.js';
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -75,7 +75,7 @@ const editPointTemplate = (data, offersList, destinationsList, pointMode) => {
           <span class="event__offer-title">
             ${offer.title}
           </span>
-          &plus;&euro;&nbsp;
+          &plus;${EURO}
           <span class="event__offer-price">
             ${offer.price}
           </span>
@@ -200,7 +200,7 @@ const editPointTemplate = (data, offersList, destinationsList, pointMode) => {
               <span class="visually-hidden">
                 Price
               </span>
-              &euro;
+              ${EURO}
             </label>
             <input
               class="event__input  event__input--price"

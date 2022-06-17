@@ -1,4 +1,5 @@
 import he from 'he';
+import { EURO } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointDatetimeDueDate, humanizePointDatetimeDueTime, humanizePointDueDate, humanizePointDueTime, timeDifferenceDays, timeDifferenceHours, timeDifferenceMinutes } from '../utils/common.js';
 
@@ -12,17 +13,19 @@ const createPointTemplate = (point, offersList) => {
   const datetimeTimeTo = humanizePointDatetimeDueTime(dateTo);
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
   const offersListByType = offersList.find((offer) => ((offer.type === type))).offers;
+
   const checkedOffers = offersListByType.filter((offer) => {
     for (let index = 0; index < offers.length; index++) {
       if (offer.id === offers[index]) { return offer; }
     }
   });
+
   const renderEventOffer = (eventOffers) => eventOffers.map((eventOffer) =>
     `<li class="event__offer">
       <span class="event__offer-title">
         ${eventOffer.title}
       </span>
-      &plus;&euro;&nbsp;
+      &plus;${EURO}
       <span class="event__offer-price">
         ${eventOffer.price}
       </span>
@@ -64,7 +67,7 @@ const createPointTemplate = (point, offersList) => {
           ${renderDuration(dateTo, dateFrom)}
         </div>
         <p class="event__price">
-          &euro;&nbsp;
+          ${EURO}
           <span class="event__price-value">
             ${basePrice}
           </span>
