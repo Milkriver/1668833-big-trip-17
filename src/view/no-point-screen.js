@@ -12,7 +12,7 @@ const createNoPointsScreenTemplate = (filterType) => {
 
   return (
     `<p class="trip-events__msg">
-    ${noPointTextValue}
+      ${noPointTextValue}
     </p>`
   );
 };
