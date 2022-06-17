@@ -94,15 +94,14 @@ const editPointTemplate = (data, offersList, destinationsList, pointMode) => {
     if (destinationItem.name === '') {
       return '';
     }
-    return `
-    <section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description"> ${destinationItem.description}</p>
-      <div class="event__photos-container">
-        <div class="event__photos-tape">${renderDestinationPhoto(destinationItem.pictures)}</div>
-      </div>
-    </section>
-`;
+    return (
+      `<section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description"> ${destinationItem.description}</p>
+        <div class="event__photos-container">
+          <div class="event__photos-tape">${renderDestinationPhoto(destinationItem.pictures)}</div>
+        </div>
+      </section>`);
   };
 
   return (
@@ -127,7 +126,8 @@ const editPointTemplate = (data, offersList, destinationsList, pointMode) => {
             <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" list="destination-list-1" required ${isDisabled ? 'disabled' : ''} value=${he.encode(destination.name)} >
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination"
+            list="destination-list-1" required ${isDisabled ? 'disabled' : ''} value=${he.encode(destination.name)} >
             <datalist id="destination-list-1">
               ${renderDestinationDatalist(destinationsList)}
             </datalist>
@@ -135,9 +135,11 @@ const editPointTemplate = (data, offersList, destinationsList, pointMode) => {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" ${isDisabled ? 'disabled' : ''} value="${humanizeEditPointDatetimeDueTime(dateFrom)}">&mdash;
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" ${isDisabled ? 'disabled' : ''}
+            value="${humanizeEditPointDatetimeDueTime(dateFrom)}">&mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" ${isDisabled ? 'disabled' : ''} value="${humanizeEditPointDatetimeDueTime(dateTo)}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" ${isDisabled ? 'disabled' : ''}
+            value="${humanizeEditPointDatetimeDueTime(dateTo)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -252,13 +254,15 @@ export default class EditPointView extends AbstractStatefulView {
   #destinationToggleHandler = (evt) => {
     evt.preventDefault();
     const destinationInformation = this.#destinationsList.find((element) => (element.name === evt.target.value));
-
-    if (destinationInformation) {
-      this.updateElement({
-        destination: destinationInformation
-      }
-      );
+    if (destinationInformation === undefined) {
+      this.element.querySelector('.event__input--destination').value = '';
+      this.element.querySelector('.event__input--destination').placeholder = 'Выберите город из списка';
+      return;
     }
+    this.updateElement({
+      destination: destinationInformation
+    });
+
   };
 
   #typeToggleHandler = (evt) => {
