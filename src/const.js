@@ -12,7 +12,7 @@ const SortType = {
   OFFER: 'offer',
 };
 
-const SortTypes = [
+const SORT_TYPES = [
   {
     type: 'day',
     title: 'Day',
@@ -67,4 +67,4 @@ const Escape = {
 
 const EURO = '&euro;&nbsp;';
 
-export { FilterType, SortTypes, SortType, UserAction, UpdateType, PointMode, EURO, Escape };
+export { FilterType, SORT_TYPES, SortType, UserAction, UpdateType, PointMode, EURO, Escape };
