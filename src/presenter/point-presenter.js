@@ -1,7 +1,7 @@
-import { Escape, PointMode, UpdateType, UserAction } from '../const';
-import { remove, render, replace } from '../framework/render';
-import EditPointView from '../view/edit-point';
-import PointView from '../view/point';
+import { Escape, PointMode, UpdateType, UserAction } from '../const.js';
+import { remove, render, replace } from '../framework/render.js';
+import EditPointView from '../view/edit-point-view.js';
+import PointView from '../view/point-view.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',

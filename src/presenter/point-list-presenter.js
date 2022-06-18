@@ -1,15 +1,15 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
-import SortView from '../view/sort.js';
-import PointListView from '../view/point-list.js';
-import NoPointScreenView from '../view/no-point-screen.js';
-import TripInfoView from '../view/trip-info.js';
+import SortView from '../view/sort-view.js';
+import PointListView from '../view/point-list-view.js';
+import NoPointScreenView from '../view/no-point-screen-view.js';
+import TripInfoView from '../view/trip-info-view.js';
 import PointPresenter from './point-presenter.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortPointDay, sortPointDuration, sortPointPrice } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
 import NewPointPresenter from './new-point-presenter.js';
-import LoadingView from '../view/loading.js';
+import LoadingView from '../view/loading-view.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,

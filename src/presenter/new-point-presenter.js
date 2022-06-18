@@ -1,5 +1,5 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
-import EditPointView from '../view/edit-point';
+import EditPointView from '../view/edit-point-view.js';
 import { UserAction, UpdateType, PointMode, Escape } from '../const.js';
 
 export default class NewPointPresenter {
