@@ -1,4 +1,4 @@
-import { PointMode, UpdateType, UserAction } from '../const';
+import { Escape, PointMode, UpdateType, UserAction } from '../const';
 import { remove, render, replace } from '../framework/render';
 import EditPointView from '../view/edit-point';
 import PointView from '../view/point';
@@ -119,7 +119,7 @@ export default class PointPresenter {
   };
 
   #onEscKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (evt.key === Escape.ESCAPE || evt.key === Escape.ESC) {
       evt.preventDefault();
       this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
