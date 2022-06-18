@@ -1,4 +1,4 @@
-import { SortTypes } from '../const.js';
+import { SORT_TYPES } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const renderSortType = (sortTypes, currentSortType) => sortTypes.map((sortType) =>
@@ -19,7 +19,7 @@ const renderSortType = (sortTypes, currentSortType) => sortTypes.map((sortType) 
 
 const createSortTemplate = (currentSortType) => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    ${renderSortType(SortTypes, currentSortType)}
+    ${renderSortType(SORT_TYPES, currentSortType)}
   </form>`
 );
 

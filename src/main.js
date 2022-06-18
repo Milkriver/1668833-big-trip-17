@@ -3,8 +3,8 @@ import FilterModel from './model/filter-model.js';
 import PointModel from './model/point-model.js';
 import PointListPresenter from './presenter/point-list-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
-import NewEventButtonView from './view/new-event-button.js';
-import PointApiService from './point-api-service';
+import NewEventButtonView from './view/new-event-button-view.js';
+import PointApiService from './point-api-service.js';
 
 const AUTHORIZATION = 'Basic kS2sfS55w00cl2sa3j';
 const END_POINT = 'https://17.ecmascript.pages.academy/big-trip';
