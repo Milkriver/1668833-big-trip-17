@@ -22,18 +22,19 @@ const totalPrice = (points, offers) => {
   for (let i = 0; i < points.length; i++) {
     const offersByType = offers.find((offer) => offer.type === points[i].type);
     let price = 0;
-    for (let k = 0; k < points[i].offers.length; k++) {
-      const checkedOffersByType = offersByType.offers.find((offer) => offer.id === points[i].offers[k]);
-      price = price + checkedOffersByType.price;
+    for (let j = 0; j < points[i].offers.length; j++) {
+      const checkedOffersByType = offersByType.offers.find((offer) => offer.id === points[i].offers[j]);
+      price += checkedOffersByType.price;
     }
     totalOffersPrice += price;
   }
-  points.forEach((point) => (totalPointsPrice = totalPointsPrice + point.basePrice));
+  points.forEach((point) => (totalPointsPrice += point.basePrice));
   const total = totalOffersPrice + totalPointsPrice;
   return total;
 };
 export default class PointListPresenter {
   #pointListContainer = null;
+  #siteTripMainElement = null;
   #pointModel = null;
   #filterModel = null;
 
@@ -51,8 +52,9 @@ export default class PointListPresenter {
   #isLoading = true;
   #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
-  constructor(boardContainer, pointModel, filterModel) {
+  constructor(boardContainer, pointModel, filterModel, siteTripMainElement) {
     this.#pointListContainer = boardContainer;
+    this.#siteTripMainElement = siteTripMainElement;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
 
@@ -60,7 +62,6 @@ export default class PointListPresenter {
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-
   }
 
   get points() {
@@ -115,6 +116,7 @@ export default class PointListPresenter {
           this.#pointPresenter.get(update.id).setAborting();
         }
         break;
+
       case UserAction.ADD_POINT:
         this.#newPointPresenter.setSaving();
         try {
@@ -123,6 +125,7 @@ export default class PointListPresenter {
           this.#newPointPresenter.setAborting();
         }
         break;
+
       case UserAction.DELETE_POINT:
         this.#pointPresenter.get(update.id).setDeleting();
         try {
@@ -140,14 +143,17 @@ export default class PointListPresenter {
       case UpdateType.PATCH:
         this.#pointPresenter.get(data.id).init(data);
         break;
+
       case UpdateType.MINOR:
         this.#clearBoard();
         this.#renderBoard();
         break;
+
       case UpdateType.MAJOR:
         this.#clearBoard({ resetSortType: true });
         this.#renderBoard();
         break;
+
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
@@ -157,7 +163,9 @@ export default class PointListPresenter {
   };
 
   #handleSortTypeChange = (sortType) => {
-    if (this.#currentSortType === sortType) { return; }
+    if (this.#currentSortType === sortType) {
+      return;
+    }
 
     this.#currentSortType = sortType;
     this.#clearBoard();
@@ -176,11 +184,7 @@ export default class PointListPresenter {
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
-  #renderList = (list) => {
-    for (let i = 0; i < list.length; i++) {
-      this.#renderPoint(list[i]);
-    }
-  };
+  #renderList = (list) => list.forEach(this.#renderPoint);
 
   #renderPointList = (sortedPoints) => {
     render(this.#pointListComponent, this.#pointListContainer);
@@ -211,8 +215,7 @@ export default class PointListPresenter {
   #renderTripInfo = () => {
     const total = totalPrice(this.points, this.offers);
     this.#tripInformationComponent = new TripInfoView(this.points, total);
-    const siteTripMainElement = document.querySelector('.trip-main');
-    render(this.#tripInformationComponent, siteTripMainElement, RenderPosition.AFTERBEGIN);
+    render(this.#tripInformationComponent, this.#siteTripMainElement, RenderPosition.AFTERBEGIN);
   };
 
   #renderBoard = () => {

@@ -1,3 +1,4 @@
+import { EURO } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointDueDate } from '../utils/common.js';
 import { sortPointDay } from '../utils/point.js';
@@ -43,7 +44,7 @@ const createTripInfoTemplate = (points, totalPrice) => (
     </div>
     <p class="trip-info__cost">
       <p class="trip-info__cost">
-        Total: &euro;&nbsp;
+        Total: ${EURO}
         <span class="trip-info__cost-value">
           ${totalPrice}
         </span>

@@ -1,6 +1,6 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import EditPointView from '../view/edit-point';
-import { UserAction, UpdateType } from '../const.js';
+import { UserAction, UpdateType, PointMode } from '../const.js';
 
 export default class NewPointPresenter {
   #pointListContainer = null;
@@ -9,11 +9,11 @@ export default class NewPointPresenter {
   #destroyCallback = null;
   #offersList = null;
   #destinationsList = null;
+  #pointMode = PointMode.NEW;
 
   constructor(pointListContainer, changeData) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
-
   }
 
   init = (callback, offersList, destinationsList) => {
@@ -24,7 +24,7 @@ export default class NewPointPresenter {
     if (this.#pointEditComponent !== null) {
       return;
     }
-    this.#pointEditComponent = new EditPointView(this.#offersList, this.#destinationsList);
+    this.#pointEditComponent = new EditPointView(this.#offersList, this.#destinationsList, this.#pointMode);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
@@ -61,7 +61,6 @@ export default class NewPointPresenter {
         isDeleting: false,
       });
     };
-
     this.#pointEditComponent.shake(resetFormState);
   };
 

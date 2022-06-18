@@ -1,4 +1,4 @@
-import { UpdateType, UserAction } from '../const';
+import { PointMode, UpdateType, UserAction } from '../const';
 import { remove, render, replace } from '../framework/render';
 import EditPointView from '../view/edit-point';
 import PointView from '../view/point';
@@ -18,6 +18,7 @@ export default class PointPresenter {
 
   #point = null;
   #mode = Mode.DEFAULT;
+  #pointMode = PointMode.EDIT;
 
   constructor(pointListContainer, changeData, changeMode) {
     this.#pointListContainer = pointListContainer;
@@ -32,7 +33,7 @@ export default class PointPresenter {
     const prevPointEditComponent = this.#pointEditComponent;
 
     this.#pointComponent = new PointView(point, offersList);
-    this.#pointEditComponent = new EditPointView(offersList, destinationsList, point);
+    this.#pointEditComponent = new EditPointView(offersList, destinationsList, this.#pointMode, point);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
@@ -101,7 +102,6 @@ export default class PointPresenter {
         isDeleting: false,
       });
     };
-
     this.#pointEditComponent.shake(resetFormState);
   };
 
@@ -139,6 +139,7 @@ export default class PointPresenter {
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
       point);
+    document.removeEventListener('keydown', this.#onEscKeyDownHandler);
   };
 
   #handleDeleteClick = (point) => {
@@ -147,6 +148,7 @@ export default class PointPresenter {
       UpdateType.MINOR,
       point,
     );
+    document.removeEventListener('keydown', this.#onEscKeyDownHandler);
   };
 
   #handleFavoriteClick = () => {
