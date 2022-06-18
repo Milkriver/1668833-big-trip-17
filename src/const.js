@@ -60,6 +60,11 @@ const PointMode = {
   EDIT: 'EDIT',
 };
 
+const Escape = {
+  ESCAPE: 'Escape',
+  ESC: 'Esc'
+};
+
 const EURO = '&euro;&nbsp;';
 
-export { FilterType, SortTypes, SortType, UserAction, UpdateType, PointMode, EURO };
+export { FilterType, SortTypes, SortType, UserAction, UpdateType, PointMode, EURO, Escape };
